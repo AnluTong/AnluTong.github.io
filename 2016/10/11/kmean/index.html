@@ -1,0 +1,635 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="算法,聚类," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x7B80;&amp;#x4ECB;&amp;#x5728;&amp;#x6570;&amp;#x636E;&amp;#x6316;&amp;#x6398;&amp;#x4E2D;&amp;#xFF0C;K-Means&amp;#x7B97;&amp;#x6CD5;&amp;#x662F;&amp;#x4E00;&amp;#x79CD;cluster analysis&amp;#x7684;&amp;#x7B97;&amp;#x6CD5;&amp;#xFF0C;&amp;#x5176;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K-Mean 聚类分析">
+<meta property="og:url" content="http://yoursite.com/2016/10/11/kmean/index.html">
+<meta property="og:site_name" content="Delta">
+<meta property="og:description" content="&amp;#x7B80;&amp;#x4ECB;&amp;#x5728;&amp;#x6570;&amp;#x636E;&amp;#x6316;&amp;#x6398;&amp;#x4E2D;&amp;#xFF0C;K-Means&amp;#x7B97;&amp;#x6CD5;&amp;#x662F;&amp;#x4E00;&amp;#x79CD;cluster analysis&amp;#x7684;&amp;#x7B97;&amp;#x6CD5;&amp;#xFF0C;&amp;#x5176;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;">
+<meta property="og:image" content="http://yoursite.com/2016/10/11/kmean/problem intro.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/10/11/kmean/algrithm procedure.jpg">
+<meta property="og:updated_time" content="2016-10-11T10:05:58.607Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="K-Mean 聚类分析">
+<meta name="twitter:description" content="&amp;#x7B80;&amp;#x4ECB;&amp;#x5728;&amp;#x6570;&amp;#x636E;&amp;#x6316;&amp;#x6398;&amp;#x4E2D;&amp;#xFF0C;K-Means&amp;#x7B97;&amp;#x6CD5;&amp;#x662F;&amp;#x4E00;&amp;#x79CD;cluster analysis&amp;#x7684;&amp;#x7B97;&amp;#x6CD5;&amp;#xFF0C;&amp;#x5176;&amp;#x4E3B;&amp;#x8981;&amp;#x662F;&amp;">
+<meta name="twitter:image" content="http://yoursite.com/2016/10/11/kmean/problem intro.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/11/kmean/"/>
+
+  <title> K-Mean 聚类分析 | Delta </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Delta</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                K-Mean 聚类分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-11T16:21:14+08:00" content="2016-10-11">
+              2016-10-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/点云处理/" itemprop="url" rel="index">
+                    <span itemprop="name">点云处理</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="&#x7B80;&#x4ECB;"><a href="#&#x7B80;&#x4ECB;" class="headerlink" title="&#x7B80;&#x4ECB;"></a>&#x7B80;&#x4ECB;</h2><p>&#x5728;&#x6570;&#x636E;&#x6316;&#x6398;&#x4E2D;&#xFF0C;K-Means&#x7B97;&#x6CD5;&#x662F;&#x4E00;&#x79CD;cluster analysis&#x7684;&#x7B97;&#x6CD5;&#xFF0C;&#x5176;&#x4E3B;&#x8981;&#x662F;&#x6765;&#x8BA1;&#x7B97;&#x6570;&#x636E;&#x805A;&#x96C6;&#x7684;&#x7B97;&#x6CD5;&#xFF0C;&#x4E3B;&#x8981;&#x4F18;&#x70B9;&#x662F;&#x901F;&#x5EA6;&#x5FEB;&#x3002;</p>
+<a id="more"></a>
+<h2 id="&#x63CF;&#x8FF0;"><a href="#&#x63CF;&#x8FF0;" class="headerlink" title="&#x63CF;&#x8FF0;"></a>&#x63CF;&#x8FF0;</h2><p>K-Means&#x7B97;&#x6CD5;&#x4E3B;&#x8981;&#x89E3;&#x51B3;&#x7684;&#x95EE;&#x9898;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#x3002;&#x5728;&#x56FE;&#x7684;&#x5DE6;&#x8FB9;&#x6709;&#x4E00;&#x4E9B;&#x70B9;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#x6709;&#x56DB;&#x4E2A;&#x70B9;&#x7FA4;&#xFF0C;&#x5982;&#x4F55;&#x5212;&#x5206;&#x8FD9;&#x4E9B;&#x70B9;&#x7FA4;&#x5C31;&#x662F;K-Mean&#x7B97;&#x6CD5;&#x8981;&#x89E3;&#x51B3;&#x7684;&#x95EE;&#x9898;&#x3002;<br><img src="/2016/10/11/kmean/problem intro.jpg" alt=""></p>
+<p>K-Mean&#x7B97;&#x6CD5;&#x8FDB;&#x884C;&#x70B9;&#x7FA4;&#x805A;&#x7C7B;&#x7684;&#x6B65;&#x9AA4;&#x53EF;&#x4EE5;&#x7528;&#x4E0B;&#x56FE;&#x8FDB;&#x884C;&#x7B80;&#x8981;&#x63CF;&#x8FF0;<br><img src="/2016/10/11/kmean/algrithm procedure.jpg" alt=""><br>&#x56FE;&#x4E2D;&#x6709;A, B, C, D, E&#x4E94;&#x4E2A;&#x70B9;&#xFF0C;&#x6211;&#x4EEC;&#x968F;&#x673A;&#x7ED9;&#x5B9A;&#x521D;&#x59CB;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#xFF0C;&#x5373;&#x56FE;&#x4E2D;&#x7070;&#x8272;&#x7684;&#x70B9;&#xFF0C;&#x4E2A;&#x6570;&#x4E3A;2&#xFF0C;&#x5373;K=2&#xFF0C;&#x7136;&#x540E;</p>
+<p>1.&#x5BF9;&#x56FE;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x70B9;&#xFF0C;&#x6C42;&#x5230;&#x6BCF;&#x4E2A;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x7684;&#x8DDD;&#x79BB;&#xFF0C;&#x5C06;&#x70B9;&#x5212;&#x5206;&#x5230;&#x79BB;&#x5B83;&#x6700;&#x8FD1;&#x7684;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x53BB;<br>2.&#x66F4;&#x65B0;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F4D;&#x7F6E;&#xFF0C;&#x79FB;&#x52A8;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x5230;&#x5C5E;&#x4E8E;&#x4ED6;&#x7684;&#x201C;&#x70B9;&#x7FA4;&#x201D;&#x7684;&#x4E2D;&#x5FC3;&#xFF0C;&#x6C42;&#x89E3;&#x65B9;&#x6CD5;&#xFF0C;&#x5BF9;&#x540C;&#x4E00;&#x805A;&#x7C7B;&#x7684;&#x6240;&#x6709;&#x70B9;&#x7684;&#x6BCF;&#x4E00;&#x7EF4;&#x5EA6;&#x6C42;&#x5747;&#x503C;&#xFF0C;&#x8BE5;&#x503C;&#x4F5C;&#x4E3A;&#x65B0;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x8BE5;&#x7EF4;&#x5EA6;&#x7684;&#x503C;&#x3002;<br>3.&#x91CD;&#x590D;&#x7B2C;1&#x548C;&#x7B2C;2&#x6B65;&#xFF0C;&#x76F4;&#x5230;&#x6240;&#x6709;&#x70B9;&#x805A;&#x7C7B;&#x5212;&#x5206;&#x4E0D;&#x518D;&#x53D8;&#x5316;&#x3002;</p>
+<h2 id="&#x95EE;&#x9898;"><a href="#&#x95EE;&#x9898;" class="headerlink" title="&#x95EE;&#x9898;"></a>&#x95EE;&#x9898;</h2><p>K-Mean&#x7B97;&#x6CD5;&#x4E3B;&#x8981;&#x6B65;&#x9AA4;&#x5982;&#x4E0A;&#xFF0C;&#x4F46;&#x662F;&#x8FD8;&#x6709;&#x51E0;&#x4E2A;&#x5177;&#x4F53;&#x7684;&#x95EE;&#x9898;&#x9700;&#x8981;&#x89E3;&#x51B3;</p>
+<ol>
+<li>&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4E2A;&#x6570;K&#x7684;&#x786E;&#x5B9A;</li>
+<li>&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F4D;&#x7F6E;&#x7684;&#x9009;&#x62E9;</li>
+<li>&#x8DDD;&#x79BB;&#x7684;&#x5EA6;&#x91CF;&#xFF0C;&#x5373;&#x4E24;&#x70B9;&#x8DDD;&#x79BB;&#x7684;&#x5B9A;&#x4E49;&#x3002;</li>
+</ol>
+<h3 id="K&#x7684;&#x786E;&#x5B9A;"><a href="#K&#x7684;&#x786E;&#x5B9A;" class="headerlink" title="K&#x7684;&#x786E;&#x5B9A;"></a>K&#x7684;&#x786E;&#x5B9A;</h3><p>K&#x4E2A;&#x6570;&#x7684;&#x786E;&#x5B9A;&#xFF0C;&#x65B9;&#x6CD5;&#x4E00;&#xFF0C;&#x4F7F;&#x7528;Canopy&#x7B97;&#x6CD5;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5212;&#x5206;&#xFF0C;&#x5212;&#x5206;&#x4E2A;&#x6570;&#x4F5C;&#x4E3A;&#x8FD9;&#x4E2A;K&#x503C;<br>&#x65B9;&#x6CD5;&#x4E8C;&#xFF0C;&#x727A;&#x7272;&#x65F6;&#x95F4;&#x590D;&#x6742;&#x5EA6;&#x6362;&#x53D6;&#x805A;&#x7C7B;&#x51C6;&#x786E;&#x5EA6;&#x3002;&#x4EE4;K&#x4ECE;2&#x5230;&#x67D0;&#x4E2A;&#x503C;&#x5982;sqrt(N)/ 2&#xFF0C;&#x8FDB;&#x884C;&#x591A;&#x6B21;&#x805A;&#x7C7B;&#x3002;&#x91C7;&#x7528;&#x4E00;&#x5B9A;&#x7684;&#x805A;&#x7C7B;&#x6307;&#x6807;&#x8FDB;&#x884C;&#x8BC4;&#x4EF7;&#xFF0C;&#x9009;&#x62E9;&#x6700;&#x9002;&#x5408;&#x7684;K&#x503C;&#x3002;</p>
+<p>&#x805A;&#x7C7B;&#x8BC4;&#x4EF7;&#x6307;&#x6807;&#x8F83;&#x591A;&#xFF0C;&#x5305;&#x62EC;&#x8F6E;&#x5ED3;&#x7CFB;&#x6570;&#x3001;Calinski-Harabasz&#x51C6;&#x5219;&#x7B49;&#x3002;&#x4E0B;&#x6587;&#x5BF9;&#x8F6E;&#x5ED3;&#x7CFB;&#x6570;&#x8BC4;&#x4EF7;&#x6307;&#x6807;&#x8FDB;&#x884C;&#x9610;&#x8FF0;</p>
+<p>&#x8F6E;&#x5ED3;&#x7CFB;&#x6570;&#xFF08;Silhouette Coefficient&#xFF09;&#x7ED3;&#x5408;&#x4E86;&#x805A;&#x7C7B;&#x7684;&#x51DD;&#x805A;&#x5EA6;&#xFF08;Cohesion&#xFF09;&#x548C;&#x5206;&#x79BB;&#x5EA6;&#xFF08;Separation&#xFF09;&#xFF0C;&#x7528;&#x4E8E;&#x8BC4;&#x4F30;&#x805A;&#x7C7B;&#x7684;&#x6548;&#x679C;&#x3002;&#x8BE5;&#x503C;&#x5904;&#x4E8E;-1~1&#x4E4B;&#x95F4;&#xFF0C;&#x503C;&#x8D8A;&#x5927;&#xFF0C;&#x8868;&#x793A;&#x805A;&#x7C7B;&#x6548;&#x679C;&#x8D8A;&#x597D;&#x3002;&#x5177;&#x4F53;&#x8BA1;&#x7B97;&#x65B9;&#x6CD5;&#x5982;&#x4E0B;&#xFF1A;</p>
+<p>a.&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x6837;&#x672C;&#x70B9;i&#xFF0C;&#x8BA1;&#x7B97;&#x70B9;i&#x4E0E;&#x5176;&#x540C;&#x4E00;&#x4E2A;&#x7C07;&#x5185;&#x7684;&#x6240;&#x6709;&#x5176;&#x4ED6;&#x5143;&#x7D20;&#x8DDD;&#x79BB;&#x7684;&#x5E73;&#x5747;&#x503C;&#xFF0C;&#x8BB0;&#x4F5C;a(i)&#xFF0C;&#x7528;&#x4E8E;&#x91CF;&#x5316;&#x7C07;&#x5185;&#x7684;&#x51DD;&#x805A;&#x5EA6;&#x3002;<br>b.&#x9009;&#x53D6;i&#x5916;&#x7684;&#x4E00;&#x4E2A;&#x7C07;b&#xFF0C;&#x8BA1;&#x7B97;i&#x4E0E;b&#x4E2D;&#x6240;&#x6709;&#x70B9;&#x7684;&#x5E73;&#x5747;&#x8DDD;&#x79BB;&#xFF0C;&#x904D;&#x5386;&#x6240;&#x6709;&#x5176;&#x4ED6;&#x7C07;&#xFF0C;&#x627E;&#x5230;&#x6700;&#x8FD1;&#x7684;&#x8FD9;&#x4E2A;&#x5E73;&#x5747;&#x8DDD;&#x79BB;,&#x8BB0;&#x4F5C;b(i)&#xFF0C;&#x5373;&#x4E3A;i&#x7684;&#x90BB;&#x5C45;&#x7C7B;&#xFF0C;&#x7528;&#x4E8E;&#x91CF;&#x5316;&#x7C07;&#x4E4B;&#x95F4;&#x5206;&#x79BB;&#x5EA6;&#x3002;<br>c.&#x5BF9;&#x4E8E;&#x6837;&#x672C;&#x70B9;i&#xFF0C;&#x8F6E;&#x5ED3;&#x7CFB;&#x6570;s(i) = (b(i) &#x2013; a(i))/max{a(i),b(i)}<br>d.&#x8BA1;&#x7B97;&#x6240;&#x6709;x&#x7684;&#x8F6E;&#x5ED3;&#x7CFB;&#x6570;&#xFF0C;&#x6C42;&#x51FA;&#x5E73;&#x5747;&#x503C;&#x5373;&#x4E3A;&#x5F53;&#x524D;&#x805A;&#x7C7B;&#x7684;&#x6574;&#x4F53;&#x8F6E;&#x5ED3;&#x7CFB;&#x6570;&#xFF0C;&#x5EA6;&#x91CF;&#x6570;&#x636E;&#x805A;&#x7C7B;&#x7684;&#x7D27;&#x5BC6;&#x7A0B;&#x5EA6;</p>
+<p>&#x4ECE;&#x4E0A;&#x9762;&#x7684;&#x516C;&#x5F0F;&#xFF0C;&#x4E0D;&#x96BE;&#x53D1;&#x73B0;&#x82E5;s(i)&#x5C0F;&#x4E8E;0&#xFF0C;&#x8BF4;&#x660E;i&#x4E0E;&#x5176;&#x7C07;&#x5185;&#x5143;&#x7D20;&#x7684;&#x5E73;&#x5747;&#x8DDD;&#x79BB;&#x5C0F;&#x4E8E;&#x6700;&#x8FD1;&#x7684;&#x5176;&#x4ED6;&#x7C07;&#xFF0C;&#x8868;&#x793A;&#x805A;&#x7C7B;&#x6548;&#x679C;&#x4E0D;&#x597D;&#x3002;&#x5982;&#x679C;a(i)&#x8D8B;&#x4E8E;0&#xFF0C;&#x6216;&#x8005;b(i)&#x8DB3;&#x591F;&#x5927;&#xFF0C;&#x5373;a(i)&lt;&lt;b(i)&#xFF0C;&#x90A3;&#x4E48;s(i)&#x8D8B;&#x8FD1;&#x4E0E;1&#xFF0C;&#x8BF4;&#x660E;&#x805A;&#x7C7B;&#x6548;&#x679C;&#x6BD4;&#x8F83;&#x597D;&#x3002;</p>
+<h3 id="&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F4D;&#x7F6E;"><a href="#&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F4D;&#x7F6E;" class="headerlink" title="&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F4D;&#x7F6E;"></a>&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F4D;&#x7F6E;</h3><p>&#x5E38;&#x89C1;&#x7684;&#x65B9;&#x6CD5;&#x662F;&#x968F;&#x673A;&#x7684;&#x9009;&#x53D6;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x6837;&#x7C07;&#x7684;&#x8D28;&#x91CF;&#x5E38;&#x5E38;&#x5F88;&#x5DEE;&#x3002;&#x5904;&#x7406;&#x9009;&#x53D6;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#x95EE;&#x9898;&#x7684;&#x4E00;&#x79CD;&#x5E38;&#x7528;&#x6280;&#x672F;&#x662F;&#xFF1A;&#x591A;&#x6B21;&#x8FD0;&#x884C;&#xFF0C;&#x6BCF;&#x6B21;&#x4F7F;&#x7528;&#x4E00;&#x7EC4;&#x4E0D;&#x540C;&#x7684;&#x968F;&#x673A;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#xFF0C;&#x7136;&#x540E;&#x9009;&#x53D6;&#x5177;&#x6709;&#x6700;&#x5C0F;SSE&#xFF08;&#x8BEF;&#x5DEE;&#x7684;&#x5E73;&#x65B9;&#x548C;&#xFF09;&#x7684;&#x7C07;&#x96C6;&#x3002;</p>
+<p>&#x7B2C;&#x4E8C;&#x79CD;&#x6709;&#x6548;&#x7684;&#x65B9;&#x6CD5;&#x662F;&#xFF0C;&#x53D6;&#x4E00;&#x4E2A;&#x6837;&#x672C;&#xFF0C;&#x5E76;&#x4F7F;&#x7528;&#x5C42;&#x6B21;&#x805A;&#x7C7B;&#x6280;&#x672F;&#x3002;&#x9002;&#x7528;&#x4E8E;&#x6837;&#x672C;&#x6570;&#x91CF;&#x8F83;&#x5C0F;&#xFF0C;&#x805A;&#x7C7B;&#x8F83;&#x5C11;&#x7684;&#x6837;&#x672C;&#x3002;</p>
+<p>&#x7B2C;&#x4E09;&#x79CD;&#x65B9;&#x6CD5;&#xFF0C;&#x968F;&#x673A;&#x5730;&#x9009;&#x62E9;&#x7B2C;&#x4E00;&#x4E2A;&#x70B9;&#xFF0C;&#x6216;&#x53D6;&#x6240;&#x6709;&#x70B9;&#x7684;&#x8D28;&#x5FC3;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E00;&#x4E2A;&#x70B9;&#x3002;&#x7136;&#x540E;&#xFF0C;&#x5BF9;&#x4E8E;&#x6BCF;&#x4E2A;&#x540E;&#x7EE7;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#xFF0C;&#x9009;&#x62E9;&#x79BB;&#x5DF2;&#x7ECF;&#x9009;&#x53D6;&#x8FC7;&#x7684;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#x6700;&#x8FDC;&#x7684;&#x70B9;&#x3002;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#xFF0C;&#x786E;&#x4FDD;&#x4E86;&#x9009;&#x62E9;&#x7684;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#x4E0D;&#x4EC5;&#x662F;&#x968F;&#x673A;&#x7684;&#xFF0C;&#x800C;&#x4E14;&#x662F;&#x6563;&#x5F00;&#x7684;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#x53EF;&#x80FD;&#x9009;&#x4E2D;&#x79BB;&#x7FA4;&#x70B9;&#x3002;&#x6B64;&#x5916;&#xFF0C;&#x6C42;&#x79BB;&#x5F53;&#x524D;&#x521D;&#x59CB;&#x8D28;&#x5FC3;&#x96C6;&#x6700;&#x8FDC;&#x7684;&#x70B9;&#x5F00;&#x9500;&#x4E5F;&#x975E;&#x5E38;&#x5927;&#x3002;</p>
+<p>&#x7B2C;&#x56DB;&#x79CD;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x4E0A;&#x9762;&#x63D0;&#x5230;&#x7684;canopy&#x7B97;&#x6CD5;&#x3002;</p>
+<h3 id="&#x8DDD;&#x79BB;&#x7684;&#x5EA6;&#x91CF;"><a href="#&#x8DDD;&#x79BB;&#x7684;&#x5EA6;&#x91CF;" class="headerlink" title="&#x8DDD;&#x79BB;&#x7684;&#x5EA6;&#x91CF;"></a>&#x8DDD;&#x79BB;&#x7684;&#x5EA6;&#x91CF;</h3><p>&#x5E38;&#x7528;&#x7684;&#x8DDD;&#x79BB;&#x5EA6;&#x91CF;&#x65B9;&#x6CD5;&#x5305;&#x62EC;&#xFF1A;&#x6B27;&#x51E0;&#x91CC;&#x5F97;&#x8DDD;&#x79BB;&#x548C;&#x4F59;&#x5F26;&#x76F8;&#x4F3C;&#x5EA6;&#x3002;&#x4E24;&#x8005;&#x90FD;&#x662F;&#x8BC4;&#x5B9A;&#x4E2A;&#x4F53;&#x95F4;&#x5DEE;&#x5F02;&#x7684;&#x5927;&#x5C0F;&#x7684;&#x3002;&#x6B27;&#x51E0;&#x91CC;&#x5F97;&#x8DDD;&#x79BB;&#x5EA6;&#x91CF;&#x4F1A;&#x53D7;&#x6307;&#x6807;&#x4E0D;&#x540C;&#x5355;&#x4F4D;&#x523B;&#x5EA6;&#x7684;&#x5F71;&#x54CD;&#xFF0C;&#x6240;&#x4EE5;&#x4E00;&#x822C;&#x9700;&#x8981;&#x5148;&#x8FDB;&#x884C;&#x6807;&#x51C6;&#x5316;&#xFF0C;&#x540C;&#x65F6;&#x8DDD;&#x79BB;&#x8D8A;&#x5927;&#xFF0C;&#x4E2A;&#x4F53;&#x95F4;&#x5DEE;&#x5F02;&#x8D8A;&#x5927;&#xFF1B;&#x7A7A;&#x95F4;&#x5411;&#x91CF;&#x4F59;&#x5F26;&#x5939;&#x89D2;&#x7684;&#x76F8;&#x4F3C;&#x5EA6;&#x5EA6;&#x91CF;&#x4E0D;&#x4F1A;&#x53D7;&#x6307;&#x6807;&#x523B;&#x5EA6;&#x7684;&#x5F71;&#x54CD;&#xFF0C;&#x4F59;&#x5F26;&#x503C;&#x843D;&#x4E8E;&#x533A;&#x95F4;[-1,1]&#xFF0C;&#x503C;&#x8D8A;&#x5927;&#xFF0C;&#x5DEE;&#x5F02;&#x8D8A;&#x5C0F;&#x3002;</p>
+<h2 id="&#x4EE3;&#x7801;&#x5B9E;&#x73B0;"><a href="#&#x4EE3;&#x7801;&#x5B9E;&#x73B0;" class="headerlink" title="&#x4EE3;&#x7801;&#x5B9E;&#x73B0;"></a>&#x4EE3;&#x7801;&#x5B9E;&#x73B0;</h2><p>&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x672A;&#x5BF9;&#x4E0A;&#x8FF0;&#x8BA8;&#x8BBA;&#x7684;&#x95EE;&#x9898;&#x8FDB;&#x884C;&#x7F16;&#x7801;&#xFF0C;&#x800C;&#x662F;&#x7528;&#x76F4;&#x89C2;&#x7684;&#x65B9;&#x5F0F;&#x5B9E;&#x73B0;K-Mean&#x7B97;&#x6CD5;&#x3002;K&#x4E2A;&#x6570;&#x8981;&#x6C42;&#x7528;&#x6237;&#x7ED9;&#x51FA;&#xFF0C;&#x521D;&#x59CB;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x4F7F;&#x7528;&#x968F;&#x673A;&#x4F4D;&#x7F6E;&#xFF0C;&#x4F4D;&#x7F6E;&#x5EA6;&#x91CF;&#x4E3A;&#x6B27;&#x62C9;&#x8DDD;&#x79BB;&#x3002;<br>&#x521D;&#x59CB;&#x5316;&#x65B9;&#x6CD5;&#xFF0C;&#x4E3B;&#x8981;&#x7528;&#x4E8E;&#x521D;&#x59CB;&#x5316;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x5217;&#x8868;&#x3001;&#x7C7B;&#x53D8;&#x91CF;&#x3001;&#x521D;&#x59CB;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">void KMean::init(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k)</div><div class="line">{</div><div class="line">	vector&lt;vector&lt;double&gt; &gt;().swap(dataSet);</div><div class="line">	dataSet = data;</div><div class="line">	K_SIZE = k;</div><div class="line">	DIM_SIZE = dataSet[0].size();</div><div class="line">	DATE_SIZE = dataSet.size();</div><div class="line"></div><div class="line">	initClusterAssignment();</div><div class="line">	initCentroids();</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x7528;&#x4E8E;&#x5B58;&#x50A8;&#x67D0;&#x8282;&#x70B9;&#x6240;&#x5C5E;&#x7684;&#x805A;&#x7C7B;&#x7D22;&#x5F15;&#x53CA;&#x8BE5;&#x70B9;&#x4E0E;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x7684;&#x8DDD;&#x79BB;&#x3002;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x5217;&#x8868;&#x4E0E;&#x539F;&#x59CB;&#x6570;&#x636E;&#x4E00;&#x4E00;&#x5BF9;&#x5E94;&#x3002;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">class Node //&#x8F85;&#x52A9;&#x8282;&#x70B9;</div><div class="line">{</div><div class="line">public:</div><div class="line">	int minIndex; // &#x5C5E;&#x4E8E;&#x54EA;&#x4E2A;&#x8D28;&#x5FC3;&#x7684;&#x7C7B;&#x522B;</div><div class="line">	double minDist; // &#x4E0E;&#x6700;&#x8FD1;&#x8D28;&#x5FC3;&#x7684;&#x8DDD;&#x79BB;</div><div class="line">	Node(int idx, double dist):minIndex(idx),minDist(dist) {}</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x5217;&#x8868;&#x7684;&#x521D;&#x59CB;&#x5316;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">void KMean::<span class="function"><span class="title">initClusterAssignment</span></span>()</div><div class="line">{</div><div class="line">	vector&lt;Node&gt;().swap(clusterAssignment);</div><div class="line">	Node node(-1, -1);</div><div class="line">	<span class="keyword">for</span> (int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">	{</div><div class="line">		clusterAssignment.push_back(node);</div><div class="line">	}</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x7684;&#x521D;&#x59CB;&#x5316;&#xFF0C;&#x91C7;&#x7528;&#x968F;&#x673A;&#x51FD;&#x6570;&#xFF0C;&#x5728;&#x8BE5;&#x7EF4;&#x5EA6;&#x6700;&#x5927;&#x6700;&#x5C0F;&#x503C;&#x7684;&#x8303;&#x56F4;&#x5185;&#xFF0C;&#x5BF9;&#x6BCF;&#x4E00;&#x7EF4;&#x5EA6;&#x8D4B;&#x503C;&#x3002;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">void KMean::<span class="function"><span class="title">initCentroids</span></span>()</div><div class="line">{</div><div class="line">	//&#x521D;&#x59CB;&#x5316;centroids</div><div class="line">	vector&lt;vector&lt;double&gt; &gt;().swap(centroids);</div><div class="line">	vector&lt;double&gt; vec(DIM_SIZE, 0);</div><div class="line">	<span class="keyword">for</span> (int i = 0; i &lt; K_SIZE; ++i)</div><div class="line">	{</div><div class="line">		centroids.push_back(vec);</div><div class="line">	}</div><div class="line"></div><div class="line">	// <span class="built_in">set</span> values by column</div><div class="line">	srand(time(NULL));</div><div class="line">	<span class="keyword">for</span> (int j = 0; j &lt; DIM_SIZE; ++j)</div><div class="line">	{</div><div class="line">		//&#x83B7;&#x53D6;&#x7B2C;j&#x7EF4;&#x6700;&#x5927;&#x6700;&#x5C0F;&#x503C;&#xFF0C;&#x5E76;&#x8BBE;&#x7F6E;k&#x4E2A;&#x805A;&#x7C7B;&#x4E3A;&#x8BE5;&#x8303;&#x56F4;&#x5185;&#x7684;&#x968F;&#x673A;&#x503C;</div><div class="line">		//&#x83B7;&#x53D6;idx&#x7EF4;&#x5EA6;&#x7684;&#x6700;&#x5927;&#x548C;&#x6700;&#x5C0F;&#x503C;</div><div class="line">		int idx = j;</div><div class="line">		double min, max;</div><div class="line">		dataSet[0].at(idx) &gt; dataSet[1].at(idx) </div><div class="line">			? ( max = dataSet[0].at(idx), min = dataSet[1].at(idx) ) </div><div class="line">			: ( max = dataSet[1].at(idx), min = dataSet[0].at(idx) );</div><div class="line"></div><div class="line">		<span class="keyword">for</span> (int k = 2; k &lt; DATE_SIZE; ++k)</div><div class="line">		{</div><div class="line">			<span class="keyword">if</span> (dataSet[k].at(idx) &lt; min)</div><div class="line">				min = dataSet[k].at(idx);</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (dataSet[k].at(idx) &gt; max)</div><div class="line">				max = dataSet[k].at(idx);</div><div class="line">			<span class="keyword">else</span></div><div class="line">				<span class="built_in">continue</span>;</div><div class="line">		}</div><div class="line"></div><div class="line">		//&#x521D;&#x59CB;&#x5316;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		double rangeIdx = max - min;</div><div class="line">		<span class="keyword">for</span> (int k = 0; k &lt; K_SIZE; ++k)</div><div class="line">		{</div><div class="line">			// generate <span class="built_in">float</span> data between 0 and 1</div><div class="line">			centroids[k].at(idx) = min + rangeIdx * ( rand() / (double)RAND_MAX);</div><div class="line">		}</div><div class="line">	}</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x7B97;&#x6CD5;&#x7684;&#x8FED;&#x4EE3;&#x8FC7;&#x7A0B;&#xFF0C;&#x5982;&#x4E0A;&#x6587;&#x63CF;&#x8FF0;&#xFF0C;&#x5BF9;&#x6BCF;&#x4E00;&#x7EF4;&#x5EA6;&#x6C42;&#x5E73;&#x5747;&#x503C;&#xFF0C;&#x7EC8;&#x6B62;&#x65B9;&#x5F0F;&#x662F;&#x805A;&#x7C7B;&#x5212;&#x5206;&#x4E0D;&#x518D;&#x53D8;&#x5316;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line">void KMean::clusterImpl(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k)</div><div class="line">{</div><div class="line">	init(data, k);</div><div class="line"></div><div class="line">	bool clusterChanged = <span class="literal">true</span>;</div><div class="line">	int count (0);</div><div class="line">	<span class="keyword">while</span> (clusterChanged &amp;&amp; count &lt; MAX_CIRCLE_COUNT)</div><div class="line">	{</div><div class="line">		++count;</div><div class="line">		clusterChanged = <span class="literal">false</span>;</div><div class="line">		//&#x6BD4;&#x8F83;&#x8DDD;&#x79BB;&#xFF0C;&#x5C06;&#x6240;&#x6709;&#x70B9;&#x8FDB;&#x884C;&#x5206;&#x7C7B;&#xFF0C;&#x5E76;&#x66F4;&#x65B0;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x6570;&#x7EC4;</div><div class="line">		cout &lt;&lt; <span class="string">&quot;find the nearest centroid of each point : &quot;</span> &lt;&lt; endl;</div><div class="line">		<span class="keyword">for</span> (int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">		{</div><div class="line">			int minIndex = -1;</div><div class="line">			double minDist = INT_MAX;</div><div class="line">			<span class="keyword">for</span> (int j = 0; j &lt; K_SIZE; ++j)</div><div class="line">			{</div><div class="line">				// &#x4E0E;&#x6700;&#x8FD1;&#x7684;&#x8D28;&#x5FC3;&#x805A;&#x4E3A;&#x4E00;&#x7C7B;</div><div class="line">				double distJI = distEclud(centroids[j], dataSet[i]);</div><div class="line">				<span class="keyword">if</span> ( distJI &lt; minDist ) // &#x53EA;&#x53D6;&#x6700;&#x77ED;&#x8DDD;&#x79BB;</div><div class="line">				{</div><div class="line">					minDist = distJI;</div><div class="line">					minIndex = j;</div><div class="line">				}</div><div class="line">			}</div><div class="line">			//&#x7D22;&#x5F15;&#x4E0E;&#x8DDD;&#x79BB;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x90FD;&#x4E0D;&#x76F8;&#x540C;&#x90FD;&#x8981;&#x66F4;&#x65B0;&#x8DDD;&#x79BB;&#x503C;</div><div class="line">			<span class="keyword">if</span> ( clusterAssignment[i].minIndex != minIndex || clusterAssignment[i].minDist != minDist)</div><div class="line">			{</div><div class="line">				clusterChanged = <span class="literal">true</span>;</div><div class="line">				clusterAssignment[i].minIndex = minIndex;</div><div class="line">				clusterAssignment[i].minDist = minDist;</div><div class="line">			}</div><div class="line">		}</div><div class="line"></div><div class="line">		//&#x66F4;&#x65B0;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		cout &lt;&lt; <span class="string">&quot;update the centroids : &quot;</span> &lt;&lt; endl;</div><div class="line">		vector&lt;double&gt; vec(DIM_SIZE, 0);</div><div class="line">		vector&lt;vector&lt;double&gt; &gt; vecList(K_SIZE, vec);</div><div class="line">		vector&lt;int&gt; countList(K_SIZE, 0);</div><div class="line">		<span class="keyword">for</span>(int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">		{</div><div class="line">			//&#x83B7;&#x53D6;&#x8BE5;&#x70B9;&#x5BF9;&#x5E94;&#x7684;&#x805A;&#x7C7B;&#x7D22;&#x5F15;</div><div class="line">			int clusterIdx =  clusterAssignment[i].minIndex;</div><div class="line">			//&#x7EDF;&#x8BA1;&#x8BE5;&#x805A;&#x7C7B;&#x70B9;&#x7684;&#x4E2A;&#x6570;</div><div class="line">			++countList[clusterIdx];</div><div class="line">			//&#x5BF9;&#x8BE5;&#x805A;&#x7C7B;&#x5404;&#x7EF4;&#x5EA6;&#x8FDB;&#x884C;&#x6C42;&#x548C;</div><div class="line">			<span class="keyword">for</span>(int dim = 0; dim &lt; DIM_SIZE; ++dim)</div><div class="line">			{</div><div class="line">				vecList[clusterIdx][dim] += dataSet[i][dim];</div><div class="line">			}</div><div class="line">		}</div><div class="line"></div><div class="line">		<span class="keyword">for</span>(int i = 0; i &lt; K_SIZE; ++i)</div><div class="line">		{</div><div class="line">			<span class="keyword">for</span>( int dim = 0; dim &lt; DIM_SIZE; ++dim)</div><div class="line">			{</div><div class="line">				//&#x5BF9;&#x805A;&#x7C7B;&#x67D0;&#x4E00;&#x7EF4;&#x5EA6;&#x6C42;&#x5747;&#x503C;&#xFF0C;&#x5E76;&#x4EE5;&#x6B64;&#x4F5C;&#x4E3A;&#x65B0;&#x7684;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">				<span class="keyword">if</span> (countList[i] != 0)</div><div class="line">				{</div><div class="line">					vecList[i][dim] /= countList[i];</div><div class="line">				}</div><div class="line">				centroids[i][dim] = vecList[i][dim]; // &#x8D28;&#x5FC3;&#x662F;&#x865A;&#x62DF;&#x7684;</div><div class="line">			}</div><div class="line">		}</div><div class="line">	}</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x4F9D;&#x9760;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x5217;&#x8868;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5BF9;&#x539F;&#x59CB;&#x70B9;&#x8FDB;&#x884C;&#x805A;&#x7C7B;&#x5212;&#x5206;&#xFF0C;&#x6700;&#x7EC8;&#x8F93;&#x51FA;Cluster&#x5217;&#x8868;</p>
+<p>Cluster&#x5B9A;&#x4E49;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">class Cluster </div><div class="line">{</div><div class="line">public:</div><div class="line">	//&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x5750;&#x6807;</div><div class="line">    std::vector&lt;double&gt; mode;</div><div class="line">	//&#x805A;&#x7C7B;&#x70B9;&#x96C6;</div><div class="line">    std::vector&lt;std::vector&lt;double&gt;&gt; support;</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>&#x805A;&#x7C7B;&#x5212;&#x5206;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">vector&lt;Cluster&gt; KMean::<span class="function"><span class="title">devideCluster</span></span>()</div><div class="line">{</div><div class="line">	Cluster cluster;</div><div class="line">	vector&lt;Cluster&gt; result (K_SIZE, cluster);</div><div class="line">	<span class="keyword">for</span>(int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">	{</div><div class="line">		//&#x83B7;&#x53D6;&#x8BE5;&#x70B9;&#x5BF9;&#x5E94;&#x7684;&#x805A;&#x7C7B;&#x7D22;&#x5F15;</div><div class="line">		int clusterIdx =  clusterAssignment[i].minIndex;</div><div class="line">		vector&lt;double&gt;&amp; point = dataSet[i];</div><div class="line">		//&#x5BF9;&#x70B9;&#x8FDB;&#x884C;&#x5206;&#x7C7B;</div><div class="line">		result[clusterIdx].support.push_back(point);</div><div class="line">		//&#x8BBE;&#x7F6E;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		result[clusterIdx].mode = centroids[clusterIdx];</div><div class="line">	}</div><div class="line"></div><div class="line">	//&#x5220;&#x9664;&#x7A7A;&#x805A;&#x7C7B;</div><div class="line">	<span class="keyword">for</span>(vector&lt;Cluster&gt;::iterator it = result.begin(); it != result.end();)</div><div class="line">	{</div><div class="line">		Cluster&amp; clu = *it;</div><div class="line">		<span class="keyword">if</span>(clu.support.size() == 0)</div><div class="line">		{</div><div class="line">			it = result.erase(it);</div><div class="line">		}</div><div class="line">		<span class="keyword">else</span></div><div class="line">		{</div><div class="line">			++it;</div><div class="line">		}</div><div class="line">	}</div><div class="line"></div><div class="line">	<span class="built_in">return</span> result;</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x5BF9;&#x5916;&#x63A5;&#x53E3;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vector&lt;Cluster&gt; KMean::cluster(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k)</div><div class="line">{</div><div class="line">	clusterImpl(data, k);</div><div class="line">	<span class="built_in">return</span> devideCluster();</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x4E0B;&#x9762;&#x8D34;&#x51FA;&#x5B8C;&#x6574;&#x4EE3;&#x7801;&#xFF1A;</p>
+<p>KMean.h<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#pragma once</span></div><div class="line"><span class="comment">#include &lt;vector&gt;</span></div><div class="line"><span class="comment">#include &lt;iostream&gt;</span></div><div class="line"><span class="comment">#include &lt;set&gt;</span></div><div class="line"><span class="comment">#include &quot;Cluster.h&quot;</span></div><div class="line"><span class="comment">#include &lt;ctime&gt; // for srand</span></div><div class="line"></div><div class="line">using namespace std;</div><div class="line"></div><div class="line">class KMean</div><div class="line">{</div><div class="line">private:</div><div class="line">		vector&lt;vector&lt;double&gt; &gt; dataSet; // &#x6570;&#x636E;&#x96C6;&#x5408;</div><div class="line">		int DIM_SIZE, DATE_SIZE; // &#x6570;&#x636E;&#x7EF4;&#x5EA6;&#x53CA;&#x6570;&#x636E;&#x6570;&#x91CF;</div><div class="line">		int K_SIZE; //&#x5212;&#x5206;&#x4E3A;K&#x4E2A;&#x805A;&#x7C7B;</div><div class="line">		vector&lt;vector&lt;double&gt; &gt; centroids; //K&#x4E2A;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		class Node //&#x8F85;&#x52A9;&#x8282;&#x70B9;</div><div class="line">		{</div><div class="line">		public:</div><div class="line">			int minIndex; // &#x5C5E;&#x4E8E;&#x54EA;&#x4E2A;&#x8D28;&#x5FC3;&#x7684;&#x7C7B;&#x522B;</div><div class="line">			double minDist; // &#x4E0E;&#x6700;&#x8FD1;&#x8D28;&#x5FC3;&#x7684;&#x8DDD;&#x79BB;</div><div class="line">			Node(int idx, double dist):minIndex(idx),minDist(dist) {}</div><div class="line">		};</div><div class="line">		vector&lt;Node&gt; clusterAssignment; //&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x6570;&#x7EC4;&#xFF0C;&#x7528;&#x4E8E;&#x5B58;&#x50A8;&#x6BCF;&#x4E2A;&#x70B9;&#x5C5E;&#x4E8E;&#x7684;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x53CA;&#x4E24;&#x8005;&#x95F4;&#x8DDD;&#x79BB;&#xFF0C;&#x4E00;&#x4E00;&#x5BF9;&#x5E94;&#x4E8E;dataSet</div><div class="line">	</div><div class="line">		void initCentroids(); //&#x521D;&#x59CB;&#x5316;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;&#x7684;&#x67D0;&#x4E00;&#x7EF4;&#x5EA6;&#x503C;</div><div class="line">		void initClusterAssignment(); //&#x521D;&#x59CB;&#x5316;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x6570;&#x7EC4;</div><div class="line">		double distEclud(vector&lt;double&gt; &amp;v1, vector&lt;double&gt; &amp;v2); //&#x6D4B;&#x91CF;&#x4E24;&#x70B9;&#x7684;&#x6B27;&#x62C9;&#x8DDD;&#x79BB;</div><div class="line"></div><div class="line">		void init(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k); //&#x521D;&#x59CB;&#x5316;&#x63A5;&#x53E3;</div><div class="line">		void clusterImpl(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k);</div><div class="line">		vector&lt;Cluster&gt; devideCluster();</div><div class="line">public:</div><div class="line">		<span class="function"><span class="title">KMean</span></span>() {}</div><div class="line">		vector&lt;Cluster&gt; cluster(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k);</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>KMean.cpp<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#include &quot;stdafx.h&quot;</span></div><div class="line"><span class="comment">#include &quot;KMean.h&quot;</span></div><div class="line"></div><div class="line"><span class="comment">#define MAX_CIRCLE_COUNT 100</span></div><div class="line"></div><div class="line">void KMean::<span class="function"><span class="title">initCentroids</span></span>()</div><div class="line">{</div><div class="line">	//&#x521D;&#x59CB;&#x5316;centroids</div><div class="line">	vector&lt;vector&lt;double&gt; &gt;().swap(centroids);</div><div class="line">	vector&lt;double&gt; vec(DIM_SIZE, 0);</div><div class="line">	<span class="keyword">for</span> (int i = 0; i &lt; K_SIZE; ++i)</div><div class="line">	{</div><div class="line">		centroids.push_back(vec);</div><div class="line">	}</div><div class="line"></div><div class="line">	// <span class="built_in">set</span> values by column</div><div class="line">	srand(time(NULL));</div><div class="line">	<span class="keyword">for</span> (int j = 0; j &lt; DIM_SIZE; ++j)</div><div class="line">	{</div><div class="line">		//&#x83B7;&#x53D6;&#x7B2C;j&#x7EF4;&#x6700;&#x5927;&#x6700;&#x5C0F;&#x503C;&#xFF0C;&#x5E76;&#x8BBE;&#x7F6E;k&#x4E2A;&#x805A;&#x7C7B;&#x4E3A;&#x8BE5;&#x8303;&#x56F4;&#x5185;&#x7684;&#x968F;&#x673A;&#x503C;</div><div class="line">		//&#x83B7;&#x53D6;idx&#x7EF4;&#x5EA6;&#x7684;&#x6700;&#x5927;&#x548C;&#x6700;&#x5C0F;&#x503C;</div><div class="line">		int idx = j;</div><div class="line">		double min, max;</div><div class="line">		dataSet[0].at(idx) &gt; dataSet[1].at(idx) </div><div class="line">			? ( max = dataSet[0].at(idx), min = dataSet[1].at(idx) ) </div><div class="line">			: ( max = dataSet[1].at(idx), min = dataSet[0].at(idx) );</div><div class="line"></div><div class="line">		<span class="keyword">for</span> (int k = 2; k &lt; DATE_SIZE; ++k)</div><div class="line">		{</div><div class="line">			<span class="keyword">if</span> (dataSet[k].at(idx) &lt; min)</div><div class="line">				min = dataSet[k].at(idx);</div><div class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (dataSet[k].at(idx) &gt; max)</div><div class="line">				max = dataSet[k].at(idx);</div><div class="line">			<span class="keyword">else</span></div><div class="line">				<span class="built_in">continue</span>;</div><div class="line">		}</div><div class="line"></div><div class="line">		//&#x521D;&#x59CB;&#x5316;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		double rangeIdx = max - min;</div><div class="line">		<span class="keyword">for</span> (int k = 0; k &lt; K_SIZE; ++k)</div><div class="line">		{</div><div class="line">			// generate <span class="built_in">float</span> data between 0 and 1</div><div class="line">			centroids[k].at(idx) = min + rangeIdx * ( rand() / (double)RAND_MAX);</div><div class="line">		}</div><div class="line">	}</div><div class="line">}</div><div class="line">void KMean::<span class="function"><span class="title">initClusterAssignment</span></span>()</div><div class="line">{</div><div class="line">	vector&lt;Node&gt;().swap(clusterAssignment);</div><div class="line">	Node node(-1, -1);</div><div class="line">	<span class="keyword">for</span> (int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">	{</div><div class="line">		clusterAssignment.push_back(node);</div><div class="line">	}</div><div class="line">}</div><div class="line"></div><div class="line">double KMean::distEclud(vector&lt;double&gt; &amp;v1, vector&lt;double&gt; &amp;v2)</div><div class="line">{</div><div class="line">	double sum = 0;</div><div class="line">	int size = v1.size();</div><div class="line">	<span class="keyword">for</span> (int i = 0; i &lt; size; ++i)</div><div class="line">	{</div><div class="line">		sum += (v1[i] - v2[i]) * (v1[i] - v2[i]);</div><div class="line">	}</div><div class="line">	<span class="built_in">return</span> sum;</div><div class="line">}</div><div class="line"></div><div class="line">void KMean::init(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k)</div><div class="line">{</div><div class="line">	vector&lt;vector&lt;double&gt; &gt;().swap(dataSet);</div><div class="line">	dataSet = data;</div><div class="line">	K_SIZE = k;</div><div class="line">	DIM_SIZE = dataSet[0].size();</div><div class="line">	DATE_SIZE = dataSet.size();</div><div class="line"></div><div class="line">	initClusterAssignment();</div><div class="line">	initCentroids();</div><div class="line">}</div><div class="line"></div><div class="line">void KMean::clusterImpl(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k)</div><div class="line">{</div><div class="line">	init(data, k);</div><div class="line"></div><div class="line">	bool clusterChanged = <span class="literal">true</span>;</div><div class="line">	int count (0);</div><div class="line">	<span class="keyword">while</span> (clusterChanged &amp;&amp; count &lt; MAX_CIRCLE_COUNT)</div><div class="line">	{</div><div class="line">		++count;</div><div class="line">		clusterChanged = <span class="literal">false</span>;</div><div class="line">		//&#x6BD4;&#x8F83;&#x8DDD;&#x79BB;&#xFF0C;&#x5C06;&#x6240;&#x6709;&#x70B9;&#x8FDB;&#x884C;&#x5206;&#x7C7B;&#xFF0C;&#x5E76;&#x66F4;&#x65B0;&#x8F85;&#x52A9;&#x8282;&#x70B9;&#x6570;&#x7EC4;</div><div class="line">		cout &lt;&lt; <span class="string">&quot;find the nearest centroid of each point : &quot;</span> &lt;&lt; endl;</div><div class="line">		<span class="keyword">for</span> (int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">		{</div><div class="line">			int minIndex = -1;</div><div class="line">			double minDist = INT_MAX;</div><div class="line">			<span class="keyword">for</span> (int j = 0; j &lt; K_SIZE; ++j)</div><div class="line">			{</div><div class="line">				// &#x4E0E;&#x6700;&#x8FD1;&#x7684;&#x8D28;&#x5FC3;&#x805A;&#x4E3A;&#x4E00;&#x7C7B;</div><div class="line">				double distJI = distEclud(centroids[j], dataSet[i]);</div><div class="line">				<span class="keyword">if</span> ( distJI &lt; minDist ) // &#x53EA;&#x53D6;&#x6700;&#x77ED;&#x8DDD;&#x79BB;</div><div class="line">				{</div><div class="line">					minDist = distJI;</div><div class="line">					minIndex = j;</div><div class="line">				}</div><div class="line">			}</div><div class="line">			//&#x7D22;&#x5F15;&#x4E0E;&#x8DDD;&#x79BB;&#x4EFB;&#x610F;&#x4E00;&#x4E2A;&#x90FD;&#x4E0D;&#x76F8;&#x540C;&#x90FD;&#x8981;&#x66F4;&#x65B0;&#x8DDD;&#x79BB;&#x503C;</div><div class="line">			<span class="keyword">if</span> ( clusterAssignment[i].minIndex != minIndex || clusterAssignment[i].minDist != minDist)</div><div class="line">			{</div><div class="line">				clusterChanged = <span class="literal">true</span>;</div><div class="line">				clusterAssignment[i].minIndex = minIndex;</div><div class="line">				clusterAssignment[i].minDist = minDist;</div><div class="line">			}</div><div class="line">		}</div><div class="line"></div><div class="line">		//&#x66F4;&#x65B0;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		cout &lt;&lt; <span class="string">&quot;update the centroids : &quot;</span> &lt;&lt; endl;</div><div class="line">		vector&lt;double&gt; vec(DIM_SIZE, 0);</div><div class="line">		vector&lt;vector&lt;double&gt; &gt; vecList(K_SIZE, vec);</div><div class="line">		vector&lt;int&gt; countList(K_SIZE, 0);</div><div class="line">		<span class="keyword">for</span>(int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">		{</div><div class="line">			//&#x83B7;&#x53D6;&#x8BE5;&#x70B9;&#x5BF9;&#x5E94;&#x7684;&#x805A;&#x7C7B;&#x7D22;&#x5F15;</div><div class="line">			int clusterIdx =  clusterAssignment[i].minIndex;</div><div class="line">			//&#x7EDF;&#x8BA1;&#x8BE5;&#x805A;&#x7C7B;&#x70B9;&#x7684;&#x4E2A;&#x6570;</div><div class="line">			++countList[clusterIdx];</div><div class="line">			//&#x5BF9;&#x8BE5;&#x805A;&#x7C7B;&#x5404;&#x7EF4;&#x5EA6;&#x8FDB;&#x884C;&#x6C42;&#x548C;</div><div class="line">			<span class="keyword">for</span>(int dim = 0; dim &lt; DIM_SIZE; ++dim)</div><div class="line">			{</div><div class="line">				vecList[clusterIdx][dim] += dataSet[i][dim];</div><div class="line">			}</div><div class="line">		}</div><div class="line"></div><div class="line">		<span class="keyword">for</span>(int i = 0; i &lt; K_SIZE; ++i)</div><div class="line">		{</div><div class="line">			<span class="keyword">for</span>( int dim = 0; dim &lt; DIM_SIZE; ++dim)</div><div class="line">			{</div><div class="line">				//&#x5BF9;&#x805A;&#x7C7B;&#x67D0;&#x4E00;&#x7EF4;&#x5EA6;&#x6C42;&#x5747;&#x503C;&#xFF0C;&#x5E76;&#x4EE5;&#x6B64;&#x4F5C;&#x4E3A;&#x65B0;&#x7684;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">				<span class="keyword">if</span> (countList[i] != 0)</div><div class="line">				{</div><div class="line">					vecList[i][dim] /= countList[i];</div><div class="line">				}</div><div class="line">				centroids[i][dim] = vecList[i][dim]; // &#x8D28;&#x5FC3;&#x662F;&#x865A;&#x62DF;&#x7684;</div><div class="line">			}</div><div class="line">		}</div><div class="line">	}</div><div class="line">}</div><div class="line"></div><div class="line">vector&lt;Cluster&gt; KMean::<span class="function"><span class="title">devideCluster</span></span>()</div><div class="line">{</div><div class="line">	Cluster cluster;</div><div class="line">	vector&lt;Cluster&gt; result (K_SIZE, cluster);</div><div class="line">	<span class="keyword">for</span>(int i = 0; i &lt; DATE_SIZE; ++i)</div><div class="line">	{</div><div class="line">		//&#x83B7;&#x53D6;&#x8BE5;&#x70B9;&#x5BF9;&#x5E94;&#x7684;&#x805A;&#x7C7B;&#x7D22;&#x5F15;</div><div class="line">		int clusterIdx =  clusterAssignment[i].minIndex;</div><div class="line">		vector&lt;double&gt;&amp; point = dataSet[i];</div><div class="line">		//&#x5BF9;&#x70B9;&#x8FDB;&#x884C;&#x5206;&#x7C7B;</div><div class="line">		result[clusterIdx].support.push_back(point);</div><div class="line">		//&#x8BBE;&#x7F6E;&#x805A;&#x7C7B;&#x4E2D;&#x5FC3;</div><div class="line">		result[clusterIdx].mode = centroids[clusterIdx];</div><div class="line">	}</div><div class="line"></div><div class="line">	//&#x5220;&#x9664;&#x7A7A;&#x805A;&#x7C7B;</div><div class="line">	<span class="keyword">for</span>(vector&lt;Cluster&gt;::iterator it = result.begin(); it != result.end();)</div><div class="line">	{</div><div class="line">		Cluster&amp; clu = *it;</div><div class="line">		<span class="keyword">if</span>(clu.support.size() == 0)</div><div class="line">		{</div><div class="line">			it = result.erase(it);</div><div class="line">		}</div><div class="line">		<span class="keyword">else</span></div><div class="line">		{</div><div class="line">			++it;</div><div class="line">		}</div><div class="line">	}</div><div class="line"></div><div class="line">	<span class="built_in">return</span> result;</div><div class="line">}</div><div class="line"></div><div class="line">vector&lt;Cluster&gt; KMean::cluster(const vector&lt;vector&lt;double&gt; &gt;&amp; data, int k)</div><div class="line">{</div><div class="line">	clusterImpl(data, k);</div><div class="line">	<span class="built_in">return</span> devideCluster();</div><div class="line">}</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag">#算法</a>
+          
+            <a href="/tags/聚类/" rel="tag">#聚类</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/09/mean-shift/" rel="next" title="Mean shift 聚类分析">
+                <i class="fa fa-chevron-left"></i> Mean shift 聚类分析
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Andrew" />
+          <p class="site-author-name" itemprop="name">Andrew</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">2.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">3.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#K的确定"><span class="nav-number">3.1.</span> <span class="nav-text">K的确定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚类中心位置"><span class="nav-number">3.2.</span> <span class="nav-text">聚类中心位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#距离的度量"><span class="nav-number">3.3.</span> <span class="nav-text">距离的度量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-number">4.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <!--<i class="fa fa-heart"></i>-->
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andrew</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
