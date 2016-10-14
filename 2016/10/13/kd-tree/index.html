@@ -1,0 +1,656 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数据结构,算法,二叉树," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x7B80;&amp;#x4ECB;KD tree&amp;#xFF08;K dimensional&amp;#x6811;&amp;#x7684;&amp;#x7B80;&amp;#x79F0;&amp;#xFF09;&amp;#xFF0C;&amp;#x662F;&amp;#x4E00;&amp;#x79CD;&amp;#x5206;&amp;#x5272;K&amp;#x7EF4;&amp;#x6570;&amp;#x636E;&amp;#x7A7A;&amp;#x95F4;&amp;#x7684;&amp;#x4E8C;&amp;#x53C9;&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KD tree">
+<meta property="og:url" content="http://yoursite.com/2016/10/13/kd-tree/index.html">
+<meta property="og:site_name" content="Delta">
+<meta property="og:description" content="&amp;#x7B80;&amp;#x4ECB;KD tree&amp;#xFF08;K dimensional&amp;#x6811;&amp;#x7684;&amp;#x7B80;&amp;#x79F0;&amp;#xFF09;&amp;#xFF0C;&amp;#x662F;&amp;#x4E00;&amp;#x79CD;&amp;#x5206;&amp;#x5272;K&amp;#x7EF4;&amp;#x6570;&amp;#x636E;&amp;#x7A7A;&amp;#x95F4;&amp;#x7684;&amp;#x4E8C;&amp;#x53C9;&amp;#x">
+<meta property="og:image" content="http://yoursite.com/2016/10/13/kd-tree/tree space div intro.png">
+<meta property="og:image" content="http://yoursite.com/2016/10/13/kd-tree/sample kd tree.png">
+<meta property="og:image" content="http://yoursite.com/2016/10/13/kd-tree/search dynamic gif.gif">
+<meta property="og:image" content="http://yoursite.com/2016/10/13/kd-tree/bbf.jpg">
+<meta property="og:updated_time" content="2016-10-14T08:26:48.481Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KD tree">
+<meta name="twitter:description" content="&amp;#x7B80;&amp;#x4ECB;KD tree&amp;#xFF08;K dimensional&amp;#x6811;&amp;#x7684;&amp;#x7B80;&amp;#x79F0;&amp;#xFF09;&amp;#xFF0C;&amp;#x662F;&amp;#x4E00;&amp;#x79CD;&amp;#x5206;&amp;#x5272;K&amp;#x7EF4;&amp;#x6570;&amp;#x636E;&amp;#x7A7A;&amp;#x95F4;&amp;#x7684;&amp;#x4E8C;&amp;#x53C9;&amp;#x">
+<meta name="twitter:image" content="http://yoursite.com/2016/10/13/kd-tree/tree space div intro.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/13/kd-tree/"/>
+
+  <title> KD tree | Delta </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Delta</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                KD tree
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-13T10:43:21+08:00" content="2016-10-13">
+              2016-10-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/点云处理/" itemprop="url" rel="index">
+                    <span itemprop="name">点云处理</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="&#x7B80;&#x4ECB;"><a href="#&#x7B80;&#x4ECB;" class="headerlink" title="&#x7B80;&#x4ECB;"></a>&#x7B80;&#x4ECB;</h2><p>KD tree&#xFF08;K dimensional&#x6811;&#x7684;&#x7B80;&#x79F0;&#xFF09;&#xFF0C;&#x662F;&#x4E00;&#x79CD;&#x5206;&#x5272;K&#x7EF4;&#x6570;&#x636E;&#x7A7A;&#x95F4;&#x7684;&#x4E8C;&#x53C9;&#x6811;&#x3002;&#x4E3B;&#x8981;&#x5E94;&#x7528;&#x4E8E;&#x591A;&#x7EF4;&#x7A7A;&#x95F4;&#x5173;&#x952E;&#x6570;&#x636E;&#x7684;&#x641C;&#x7D22;&#xFF08;&#x5982;&#xFF1A;&#x8303;&#x56F4;&#x641C;&#x7D22;&#x548C;&#x6700;&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#xFF09;&#x3002;</p>
+<a id="more"></a>
+<h2 id="&#x63CF;&#x8FF0;"><a href="#&#x63CF;&#x8FF0;" class="headerlink" title="&#x63CF;&#x8FF0;"></a>&#x63CF;&#x8FF0;</h2><p>&#x591A;&#x7EF4;&#x7A7A;&#x95F4;&#x5173;&#x952E;&#x6570;&#x636E;&#x641C;&#x7D22;&#x5927;&#x81F4;&#x53EF;&#x5206;&#x4E3A;&#x4E24;&#x7C7B;&#xFF1A;&#x4E00;&#x7C7B;&#x662F;&#x7EBF;&#x6027;&#x626B;&#x63CF;&#x6CD5;&#xFF0C;&#x5373;&#x5C06;&#x6570;&#x636E;&#x96C6;&#x4E2D;&#x7684;&#x70B9;&#x4E0E;&#x67E5;&#x8BE2;&#x70B9;&#x9010;&#x4E00;&#x8FDB;&#x884C;&#x8DDD;&#x79BB;&#x6BD4;&#x8F83;&#xFF0C;&#x7F3A;&#x70B9;&#x5F88;&#x660E;&#x663E;&#xFF0C;&#x641C;&#x7D22;&#x6548;&#x7387;&#x8F83;&#x4F4E;&#xFF1B;&#x7B2C;&#x4E8C;&#x7C7B;&#x662F;&#x5EFA;&#x7ACB;&#x6570;&#x636E;&#x7D22;&#x5F15;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x8FDB;&#x884C;&#x5FEB;&#x901F;&#x5339;&#x914D;&#x3002;&#x56E0;&#x4E3A;&#x5B9E;&#x9645;&#x6570;&#x636E;&#x4E00;&#x822C;&#x90FD;&#x4F1A;&#x5448;&#x73B0;&#x51FA;&#x7C07;&#x72B6;&#x7684;&#x805A;&#x7C7B;&#x5F62;&#x6001;&#xFF0C;&#x901A;&#x8FC7;&#x8BBE;&#x8BA1;&#x6709;&#x6548;&#x7684;&#x7D22;&#x5F15;&#x7ED3;&#x6784;&#x53EF;&#x4EE5;&#x5927;&#x5927;&#x52A0;&#x5FEB;&#x68C0;&#x7D22;&#x7684;&#x901F;&#x5EA6;&#x3002;&#x7D22;&#x5F15;&#x6811;&#x5C5E;&#x4E8E;&#x7B2C;&#x4E8C;&#x7C7B;&#xFF0C;&#x5176;&#x57FA;&#x672C;&#x601D;&#x60F3;&#x5C31;&#x662F;&#x5BF9;&#x641C;&#x7D22;&#x7A7A;&#x95F4;&#x8FDB;&#x884C;&#x5C42;&#x6B21;&#x5212;&#x5206;&#x3002;&#x6839;&#x636E;&#x5212;&#x5206;&#x7684;&#x7A7A;&#x95F4;&#x662F;&#x5426;&#x6709;&#x6DF7;&#x53E0;&#x53EF;&#x4EE5;&#x5206;&#x4E3A;Clipping&#x548C;Overlapping&#x4E24;&#x79CD;&#x3002;&#x524D;&#x8005;&#x5212;&#x5206;&#x7A7A;&#x95F4;&#x6CA1;&#x6709;&#x91CD;&#x53E0;&#xFF0C;&#x5176;&#x4EE3;&#x8868;&#x5C31;&#x662F;k-d&#x6811;&#xFF1B;&#x540E;&#x8005;&#x5212;&#x5206;&#x7A7A;&#x95F4;&#x76F8;&#x4E92;&#x6709;&#x4EA4;&#x53E0;&#xFF0C;&#x5176;&#x4EE3;&#x8868;&#x4E3A;R&#x6811;&#x3002;</p>
+<p>KD tree&#x7B97;&#x6CD5;&#x53EF;&#x4EE5;&#x5206;&#x4E3A;&#x4E24;&#x5927;&#x90E8;&#x5206;&#xFF0C;&#x4E00;&#x90E8;&#x5206;&#x662F;&#x6709;&#x5173;KD tree&#x672C;&#x8EAB;&#x8FD9;&#x79CD;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x5EFA;&#x7ACB;&#x7684;&#x7B97;&#x6CD5;&#xFF0C;&#x53E6;&#x4E00;&#x90E8;&#x5206;&#x662F;&#x5728;&#x5EFA;&#x7ACB;&#x7684;KD tree&#x4E0A;&#x5982;&#x4F55;&#x8FDB;&#x884C;&#x6700;&#xFF08;K&#xFF09;&#x90BB;&#x8FD1;&#x67E5;&#x627E;&#x7684;&#x7B97;&#x6CD5;&#x3002;</p>
+<h3 id="KD-tree&#x6784;&#x5EFA;"><a href="#KD-tree&#x6784;&#x5EFA;" class="headerlink" title="KD tree&#x6784;&#x5EFA;"></a>KD tree&#x6784;&#x5EFA;</h3><p>&#x5148;&#x4EE5;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x5B9E;&#x4F8B;&#x6765;&#x4ECB;&#x7ECD;KD Tree&#x6784;&#x5EFA;&#x7B97;&#x6CD5;&#x3002;&#x5047;&#x8BBE;&#x6709;6&#x4E2A;&#x4E8C;&#x7EF4;&#x6570;&#x636E;&#x70B9;{(2,3),(5,4),(9,6),(4,7),(8,1),(7,2)}&#xFF0C;&#x6570;&#x636E;&#x70B9;&#x4F4D;&#x4E8E;&#x4E8C;&#x7EF4;&#x7A7A;&#x95F4;&#x5185;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x3002;&#x6784;&#x5EFA;&#x7B97;&#x6CD5;&#x5C31;&#x662F;&#x8981;&#x786E;&#x5B9A;&#x56FE;&#x4E2D;&#x5206;&#x5272;&#x7A7A;&#x95F4;&#x7684;&#x5206;&#x5272;&#x7EBF;&#xFF08;&#x591A;&#x7EF4;&#x7A7A;&#x95F4;&#x5373;&#x4E3A;&#x5206;&#x5272;&#x5E73;&#x9762;&#xFF0C;&#x4E00;&#x822C;&#x4E3A;&#x8D85;&#x5E73;&#x9762;&#xFF09;&#x3002;<br><img src="/2016/10/13/kd-tree/tree space div intro.png" alt=""></p>
+<p>&#x6709;&#x4E86;&#x76F4;&#x89C2;&#x7684;&#x4E86;&#x89E3;&#x4E4B;&#x540E;&#xFF0C;&#x63A5;&#x4E0B;&#x6765;&#x6211;&#x4EEC;&#x6765;&#x63CF;&#x8FF0;KD Tree&#x7684;&#x6784;&#x5EFA;&#x7B97;&#x6CD5;&#x3002;KD tree&#x6784;&#x5EFA;&#x662F;&#x4E00;&#x4E2A;&#x9012;&#x5F52;&#x8FC7;&#x7A0B;&#xFF0C;&#x6B65;&#x9AA4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ol>
+<li>&#x786E;&#x5B9A;&#x5206;&#x5272;&#x6570;&#x636E;&#x7684;&#x7EF4;&#x5EA6;&#xFF0C;&#x9009;&#x53D6;&#x5206;&#x5272;&#x503C;&#xFF08;&#x8D85;&#x5E73;&#x9762;&#xFF09;&#xFF0C;&#x5206;&#x5272;&#x503C;&#x5B58;&#x50A8;&#x5230;&#x5F53;&#x524D;&#x8282;&#x70B9;</li>
+<li>&#x5176;&#x4F59;&#x6570;&#x636E;&#x4E00;&#x5206;&#x4E3A;&#x4E8C;&#xFF0C;&#x5206;&#x522B;&#x8FDB;&#x5165;&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x4E2D;&#x3002;</li>
+<li>&#x91CD;&#x590D;&#x6B65;&#x9AA4;1&#x548C;2&#xFF0C;&#x76F4;&#x5230;&#x6570;&#x636E;&#x4E0D;&#x53EF;&#x5206;&#x3002;</li>
+</ol>
+<p>&#x6709;&#x4E24;&#x4E2A;&#x7EC6;&#x8282;&#x95EE;&#x9898;&#x9700;&#x8981;&#x641E;&#x6E05;&#xFF0C;&#x4E00;&#x662F;<strong>&#x5206;&#x5272;&#x7EF4;&#x5EA6;&#x5982;&#x4F55;&#x9009;&#x62E9;</strong>&#xFF0C;&#x4E8C;&#x662F;<strong>&#x5206;&#x5272;&#x503C;&#x7684;&#x9009;&#x62E9;</strong>&#x3002;</p>
+<p>&#x5206;&#x5272;&#x7EF4;&#x5EA6;&#x9009;&#x62E9;&#xFF0C;&#x6BCF;&#x6B21;&#x5BF9;&#x5B50;&#x7A7A;&#x95F4;&#x7684;&#x5212;&#x5206;&#x65F6;&#xFF0C;&#x600E;&#x6837;&#x786E;&#x5B9A;&#x5728;&#x54EA;&#x4E2A;&#x7EF4;&#x5EA6;&#x4E0A;&#x8FDB;&#x884C;&#x5212;&#x5206;&#xFF1F;&#x6700;&#x7B80;&#x5355;&#x66B4;&#x529B;&#x7684;&#x65B9;&#x5F0F;&#x662F;&#x201C;&#x8F6E;&#x7740;&#x6765;&#x201D;&#xFF0C;&#x53EF;&#x91C7;&#x7528;&#x5F53;&#x524D;&#x6811;&#x6DF1;&#x5EA6;&#x5BF9;&#x603B;&#x7EF4;&#x5EA6;&#x6570;&#x6C42;&#x6A21;&#x3002;&#x5F53;&#x6570;&#x636E;&#x5206;&#x5E03;&#x8F83;&#x4E3A;&#x5747;&#x5300;&#x65F6;&#xFF0C;&#x8BE5;&#x65B9;&#x6CD5;&#x8F83;&#x4E3A;&#x7B80;&#x6D01;&#x6709;&#x6548;&#xFF0C;&#x800C;&#x5F53;&#x5206;&#x5E03;&#x4E0D;&#x5747;&#x5300;&#x65F6;&#xFF0C;&#x8BE5;&#x65B9;&#x6CD5;&#x4F1A;&#x964D;&#x4F4E;&#x7D22;&#x5F15;&#x6548;&#x7387;&#x3002;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x6211;&#x4EEC;&#x5F15;&#x5165;&#x65B9;&#x5DEE;&#x7684;&#x6982;&#x5FF5;&#x3002;&#x6570;&#x5B66;&#x4E0A;&#x6765;&#x8BF4;&#xFF0C;&#x67D0;&#x7EF4;&#x5EA6;&#x6570;&#x636E;&#x65B9;&#x5DEE;&#x6BD4;&#x8F83;&#x5927;&#xFF0C;&#x90A3;&#x4E48;&#x8FD9;&#x4E9B;&#x6570;&#x636E;&#x5728;&#x8BE5;&#x7EF4;&#x5EA6;&#x4E0A;&#x5206;&#x6563;&#x7684;&#x6BD4;&#x8F83;&#x5F00;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x66F4;&#x5BB9;&#x6613;&#x5728;&#x8FD9;&#x4E2A;&#x7EF4;&#x5EA6;&#x4E0A;&#x5C06;&#x5B83;&#x4EEC;&#x5212;&#x5206;&#x5F00;&#x3002;&#x56E0;&#x6B64;&#x5408;&#x7406;&#x7684;&#x7B56;&#x7565;&#x662F;&#x6BCF;&#x6B21;&#x6211;&#x4EEC;&#x9009;&#x62E9;&#x7EF4;&#x5EA6;&#x8FDB;&#x884C;&#x5212;&#x5206;&#x65F6;&#xFF0C;&#x90FD;&#x9009;&#x62E9;&#x5177;&#x6709;&#x6700;&#x5927;&#x65B9;&#x5DEE;&#x7684;&#x7EF4;&#x5EA6;&#x3002;</p>
+<p>&#x5206;&#x5272;&#x503C;&#x9009;&#x62E9;&#xFF0C;&#x5728;&#x67D0;&#x4E2A;&#x7EF4;&#x5EA6;&#x4E0A;&#x8FDB;&#x884C;&#x5212;&#x5206;&#x65F6;&#xFF0C;&#x600E;&#x6837;&#x786E;&#x4FDD;&#x5728;&#x8FD9;&#x4E00;&#x7EF4;&#x5EA6;&#x4E0A;&#x7684;&#x5212;&#x5206;&#x5F97;&#x5230;&#x7684;&#x4E24;&#x4E2A;&#x5B50;&#x96C6;&#x5408;&#x7684;&#x6570;&#x91CF;&#x5C3D;&#x91CF;&#x76F8;&#x7B49;&#xFF1F;&#x65B9;&#x6CD5;&#x5F88;&#x7B80;&#x5355;&#xFF0C;&#x4EE5;&#x8BE5;&#x7EF4;&#x5EA6;&#x503C;&#x4E3A;&#x952E;&#x503C;&#x6392;&#x5E8F;&#xFF0C;&#x53D6;&#x4E2D;&#x95F4;&#x7684;&#x6570;&#xFF08;&#x5373;&#x4E2D;&#x4F4D;&#x6570;&#xFF0C;median&#xFF09;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x6240;&#x6709;&#x6570;&#x636E;&#x7684;&#x952E;&#x503C;&#x4E0E;&#x4E2D;&#x4F4D;&#x6570;&#x6BD4;&#x8F83;&#xFF0C;&#x6309;&#x5927;&#x5C0F;&#x5212;&#x5206;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x4E24;&#x4E2A;&#x5B50;&#x96C6;&#x6570;&#x636E;&#xFF0C;&#x8FD9;&#x6837;&#x5F97;&#x5230;&#x7684;&#x4E24;&#x4E2A;&#x5B50;&#x96C6;&#x5408;&#x6570;&#x636E;&#x4E2A;&#x6570;&#x57FA;&#x672C;&#x76F8;&#x540C;&#x3002;</p>
+<p>&#x4EE5;&#x524D;&#x6587;&#x4E8C;&#x7EF4;&#x6570;&#x636E;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;&#x5BF9;KD Tree&#x6784;&#x5EFA;&#x8FDB;&#x884C;&#x7B80;&#x8981;&#x5206;&#x6790;&#xFF1A;</p>
+<p>1.&#x786E;&#x5B9A;&#x5206;&#x5272;&#x7EF4;&#x5EA6;&#x3002;&#x5206;&#x522B;&#x8BA1;&#x7B97;x&#xFF0C;y&#x65B9;&#x5411;&#x4E0A;&#x6570;&#x636E;&#x7684;&#x65B9;&#x5DEE;&#x5F97;&#x77E5;x&#x65B9;&#x5411;&#x4E0A;&#x7684;&#x65B9;&#x5DEE;&#x6700;&#x5927;&#xFF0C;&#x6240;&#x4EE5;&#x5206;&#x5272;&#x7EF4;&#x5EA6;&#x9996;&#x5148;&#x53D6;0&#xFF1B;</p>
+<p>2.&#x786E;&#x5B9A;&#x5206;&#x5272;&#x503C;&#x3002;&#x6839;&#x636E;x&#x7EF4;&#x5EA6;&#x65B9;&#x5411;&#x7684;&#x503C;2,5,9,4,8,7&#x6392;&#x5E8F;&#x9009;&#x51FA;&#x4E2D;&#x503C;&#x4E3A;7&#xFF0C;&#x6240;&#x4EE5;&#x5206;&#x5272;&#x8282;&#x70B9;&#x4E3A;(7,2)&#x3002;&#x8BE5;&#x8282;&#x70B9;&#x7684;&#x5206;&#x5272;&#x8D85;&#x5E73;&#x9762;&#x5C31;&#x662F;&#x901A;&#x8FC7;(7,2)&#x5E76;&#x5782;&#x76F4;&#x4E8E;x&#x8F74;&#x7684;&#x76F4;&#x7EBF;x = 7&#xFF1B;</p>
+<p>3.&#x786E;&#x5B9A;&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x3002;&#x5206;&#x5272;&#x8D85;&#x5E73;&#x9762;x = 7&#x5C06;&#x6574;&#x4E2A;&#x7A7A;&#x95F4;&#x5206;&#x4E3A;&#x4E24;&#x90E8;&#x5206;&#xFF0C;x &lt; 7&#x7684;&#x90E8;&#x5206;&#x4E3A;&#x5DE6;&#x5B50;&#x6811;&#x6570;&#x636E;&#xFF0C;&#x5305;&#x542B;3&#x4E2A;&#x8282;&#x70B9;{(2,3),(5,4),(4,7)}&#xFF1B;&#x53E6;&#x4E00;&#x90E8;&#x5206;&#x4E3A;&#x53F3;&#x5B50;&#x6811;&#x6570;&#x636E;&#xFF0C;&#x5305;&#x542B;2&#x4E2A;&#x8282;&#x70B9;{(9,6),(8,1)}&#x3002;</p>
+<p>&#x5982;&#x7B97;&#x6CD5;&#x6240;&#x8FF0;&#xFF0C;KD tree&#x7684;&#x6784;&#x5EFA;&#x662F;&#x4E00;&#x4E2A;&#x9012;&#x5F52;&#x7684;&#x8FC7;&#x7A0B;&#x3002;&#x7136;&#x540E;&#x5BF9;&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x7684;&#x91CD;&#x590D;&#x4E0A;&#x9762;&#x7684;&#x8FC7;&#x7A0B;&#x5C31;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x4E0B;&#x4E00;&#x7EA7;&#x5B50;&#x8282;&#x70B9;(5,4)&#x548C;(9,6)&#xFF0C;&#x540C;&#x65F6;&#x5C06;&#x7A7A;&#x95F4;&#x548C;&#x6570;&#x636E;&#x96C6;&#x8FDB;&#x4E00;&#x6B65;&#x7EC6;&#x5206;&#x3002;&#x5982;&#x6B64;&#x53CD;&#x590D;&#x76F4;&#x5230;&#x7A7A;&#x95F4;&#x4E2D;&#x53EA;&#x5305;&#x542B;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x70B9;&#xFF0C;&#x6700;&#x540E;&#x751F;&#x6210;&#x7684;KD tree&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#x3002;<br><img src="/2016/10/13/kd-tree/sample kd tree.png" alt=""></p>
+<h3 id="K-&#x8FD1;&#x90BB;&#x641C;&#x7D22;"><a href="#K-&#x8FD1;&#x90BB;&#x641C;&#x7D22;" class="headerlink" title="K &#x8FD1;&#x90BB;&#x641C;&#x7D22;"></a>K &#x8FD1;&#x90BB;&#x641C;&#x7D22;</h3><p>&#x5F53;K&#x503C;&#x53D6;1&#x65F6;&#xFF0C;K&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x5C31;&#x6F14;&#x5316;&#x6210;&#x6700;&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x3002;&#x4E0B;&#x9762;&#xFF0C;&#x6211;&#x4EEC;&#x5148;&#x5BF9;&#x6700;&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x8FDB;&#x884C;&#x5206;&#x6790;&#x3002;</p>
+<p>&#x9996;&#x5148;&#x76EE;&#x6807;&#x70B9;&#x4ECE;&#x6839;&#x7ED3;&#x70B9;&#x5F00;&#x59CB;&#xFF0C;&#x6309;&#x7167;&#x4E0E;&#x5404;&#x7ED3;&#x70B9;&#x7684;&#x6BD4;&#x8F83;&#x7ED3;&#x679C;&#x5411;&#x4E0B;&#x8BBF;&#x95EE;KD tree&#xFF0C;&#x76F4;&#x81F3;&#x8FBE;&#x5230;&#x53F6;&#x5B50;&#x7ED3;&#x70B9;&#x3002;</p>
+<p>&#x76EE;&#x6807;&#x70B9;&#x4E0E;&#x7ED3;&#x70B9;&#x7684;&#x6BD4;&#x8F83;&#x6307;&#x7684;&#x662F;&#x5F53;&#x524D;&#x5212;&#x5206;&#x7EF4;&#x5EA6;&#x4E0A;&#x7684;&#x76EE;&#x6807;&#x503C;&#x4E0E;&#x7ED3;&#x70B9;&#x503C;&#x6BD4;&#x8F83;&#xFF0C;&#x82E5;&#x66F4;&#x5C0F;&#x5219;&#x8BBF;&#x95EE;&#x5DE6;&#x5B50;&#x6811;&#xFF0C;&#x5426;&#x5219;&#x8BBF;&#x95EE;&#x53F3;&#x5B50;&#x6811;&#x3002;&#x8FBE;&#x5230;&#x53F6;&#x5B50;&#x7ED3;&#x70B9;&#x65F6;&#xFF0C;&#x8BA1;&#x7B97;&#x76EE;&#x6807;&#x70B9;&#x4E0E;&#x53F6;&#x5B50;&#x7ED3;&#x70B9;&#x4E0A;&#x4FDD;&#x5B58;&#x7684;&#x6570;&#x636E;&#x4E4B;&#x95F4;&#x7684;&#x8DDD;&#x79BB;&#xFF0C;&#x8BB0;&#x5F55;&#x4E0B;&#x6700;&#x5C0F;&#x8DDD;&#x79BB;&#x5BF9;&#x5E94;&#x7684;&#x6570;&#x636E;&#x70B9;&#xFF0C;&#x8BB0;&#x4E3A;&#x5F53;&#x524D;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#x548C;&#x6700;&#x5C0F;&#x8DDD;&#x79BB;&#x3002;</p>
+<p>&#x7136;&#x540E;&#x8FDB;&#x884C;&#x56DE;&#x6EAF;&#x64CD;&#x4F5C;&#xFF0C;&#x8BE5;&#x64CD;&#x4F5C;&#x662F;&#x4E3A;&#x4E86;&#x627E;&#x5230;&#x66F4;&#x8FD1;&#x7684;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#x3002;</p>
+<p>&#x6B32;&#x5224;&#x65AD;&#x5F53;&#x524D;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#x7684;&#x7236;&#x8282;&#x70B9;&#x672A;&#x88AB;&#x8BBF;&#x95EE;&#x8FC7;&#x7684;&#x5206;&#x652F;&#x662F;&#x5426;&#x5B58;&#x5728;&#x66F4;&#x8FD1;&#x7684;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#xFF0C;&#x53EA;&#x9700;&#x5224;&#x65AD;&#x4EE5;&#x76EE;&#x6807;&#x70B9;&#x4E3A;&#x5706;&#x5FC3;&#xFF0C;&#x5F53;&#x524D;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#x4E3A;&#x534A;&#x5F84;&#x7684;&#x7403;&#x9762;&#xFF0C;&#x662F;&#x5426;&#x4E0E;&#x7ECF;&#x8FC7;&#x7236;&#x8282;&#x70B9;&#x7684;&#x5206;&#x5272;&#x8D85;&#x5E73;&#x9762;&#x76F8;&#x4EA4;&#x3002;&#x5177;&#x4F53;&#x6765;&#x8BF4;&#xFF0C;&#x5C31;&#x662F;&#x8BA1;&#x7B97;&#x7236;&#x8282;&#x70B9;&#x5212;&#x5206;&#x7EF4;&#x5EA6;&#x4E0B;&#xFF0C;&#x76EE;&#x6807;&#x8282;&#x70B9;&#x4E0E;&#x7236;&#x8282;&#x70B9;&#x5DEE;&#x7684;&#x7EDD;&#x5BF9;&#x503C;&#x3002;&#x8BE5;&#x503C;&#x82E5;&#x5C0F;&#x4E8E;&#x5F53;&#x524D;&#x6700;&#x5C0F;&#x8DDD;&#x79BB;&#xFF0C;&#x5219;&#x672A;&#x8BBF;&#x95EE;&#x7684;&#x5206;&#x652F;&#xFF08;&#x5305;&#x62EC;&#x7236;&#x8282;&#x70B9;&#xFF09;&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x66F4;&#x8FD1;&#x7684;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#x3002;</p>
+<p>&#x82E5;&#x672A;&#x8BBF;&#x95EE;&#x7684;&#x5206;&#x652F;&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x66F4;&#x8FD1;&#x7684;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#xFF0C;&#x91CD;&#x590D;&#x7B2C;&#x4E00;&#x6B65;&#xFF0C;&#x5411;&#x4E0B;&#x8BBF;&#x95EE;&#xFF0C;&#x76F4;&#x81F3;&#x8FBE;&#x5230;&#x53F6;&#x5B50;&#x8282;&#x70B9;&#xFF0C;&#x7136;&#x540E;&#x91CD;&#x590D;&#x7B2C;&#x4E8C;&#x6B65;&#xFF0C;&#x8FDB;&#x884C;&#x67E5;&#x627E;&#x3002;</p>
+<p>&#x82E5;&#x53E6;&#x4E00;&#x5206;&#x652F;&#x4E0D;&#x5B58;&#x5728;&#x66F4;&#x8FD1;&#x7684;&#x201C;&#x6700;&#x8FD1;&#x90BB;&#x70B9;&#x201D;&#xFF0C;&#x5219;&#x56DE;&#x6EAF;&#x5230;&#x7236;&#x8282;&#x70B9;&#xFF0C;&#x91CD;&#x590D;&#x7B2C;&#x4E8C;&#x6B65;&#xFF0C;&#x76F4;&#x5230;&#x56DE;&#x6EAF;&#x5230;&#x6839;&#x7ED3;&#x70B9;&#x3002;</p>
+<p>&#x641C;&#x7D22;&#x8FC7;&#x7A0B;&#x793A;&#x610F;&#xFF0C;&#x4E0B;&#x9762;&#x7528;&#x52A8;&#x6001;&#x56FE;&#x5C55;&#x793A;&#xFF1A;<br><img src="/2016/10/13/kd-tree/search dynamic gif.gif" alt=""></p>
+<p>K&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#xFF0C;&#x6211;&#x4EEC;&#x91C7;&#x7528;BBF&#xFF08;Best-Bin-First&#xFF09;&#x6539;&#x8FDB;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x8FD1;&#x4F3C;&#x641C;&#x7D22;&#x3002;&#x300A;<a href="http://www.cnblogs.com/v-July-v/archive/2012/11/20/3125419.html" target="_blank" rel="external">&#x4ECE;K&#x8FD1;&#x90BB;&#x7B97;&#x6CD5;&#x3001;&#x8DDD;&#x79BB;&#x5EA6;&#x91CF;&#x8C08;&#x5230;KD&#x6811;&#x3001;SIFT+BBF&#x7B97;&#x6CD5;</a>&#x300B;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#x5BF9;&#x6539;&#x8FDB;BBF&#x7B97;&#x6CD5;&#x7684;&#x63CF;&#x8FF0;&#x662F;&#xFF1A;<br>1.&#x5728;&#x67D0;&#x4E00;&#x5C42;&#xFF0C;&#x5206;&#x5272;&#x9762;&#x662F;&#x7B2C;ki&#x7EF4;&#xFF0C;&#x5206;&#x5272;&#x503C;&#x662F;kv&#xFF0C;&#x90A3;&#x4E48; abs(q[ki]-kv) &#x5C31;&#x662F;&#x6CA1;&#x6709;&#x9009;&#x62E9;&#x7684;&#x90A3;&#x4E2A;&#x5206;&#x652F;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BA1;&#x7B97;&#x7684;&#x662F;&#x90A3;&#x4E00;&#x7EF4;&#x4E0A;&#x7684;&#x8DDD;&#x79BB;&#xFF1B;<br>2.&#x540C;&#x65F6;&#xFF0C;&#x4ECE;&#x4F18;&#x5148;&#x961F;&#x5217;&#x91CC;&#x9762;&#x53D6;&#x8282;&#x70B9;&#x53EA;&#x5728;&#x67D0;&#x6B21;&#x641C;&#x7D22;&#x5230;&#x53F6;&#x8282;&#x70B9;&#x540E;&#x624D;&#x53D1;&#x751F;&#xFF0C;&#x8BA1;&#x7B97;&#x8FC7;&#x8DDD;&#x79BB;&#x7684;&#x8282;&#x70B9;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x5728;&#x961F;&#x5217;&#x7684;&#xFF0C;&#x6BD4;&#x5982;1~10&#x8FD9;10&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x4F60;&#x7B2C;&#x4E00;&#x6B21;&#x641C;&#x7D22;&#x5230;&#x53F6;&#x8282;&#x70B9;&#x7684;&#x8DEF;&#x5F84;&#x662F;1-5-7&#xFF0C;&#x90A3;&#x4E48;1&#xFF0C;5&#xFF0C;7&#x662F;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x5728;&#x4F18;&#x5148;&#x961F;&#x5217;&#x7684;&#x3002;&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;&#x4F18;&#x5148;&#x961F;&#x5217;&#x91CC;&#x9762;&#x5B58;&#x7684;&#x90FD;&#x662F;&#x67E5;&#x8BE2;&#x8DEF;&#x5F84;&#x4E0A;&#x8282;&#x70B9;&#x5BF9;&#x5E94;&#x7684;&#x76F8;&#x53CD;&#x5B50;&#x8282;&#x70B9;&#xFF0C;&#x6BD4;&#x5982;&#xFF1A;&#x641C;&#x7D22;&#x5DE6;&#x5B50;&#x6811;&#xFF0C;&#x5C31;&#x628A;&#x5BF9;&#x5E94;&#x8FD9;&#x4E00;&#x5C42;&#x7684;&#x53F3;&#x8282;&#x70B9;&#x5B58;&#x8FDB;&#x961F;&#x5217;&#x3002;</p>
+<p>&#x4F2A;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;<br><img src="/2016/10/13/kd-tree/bbf.jpg" alt=""></p>
+<p>&#x6211;&#x4EEC;&#x57FA;&#x4E8E;&#x5927;&#x9876;&#x5806;&#x8BBE;&#x8BA1;&#x4E86;&#x4F18;&#x5148;&#x7EA7;&#x961F;&#x5217;&#xFF0C;K&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#x8FC7;&#x7A0B;&#x603B;&#x5171;&#x9700;&#x8981;&#x4E24;&#x4E2A;&#x4F18;&#x5148;&#x7EA7;&#x961F;&#x5217;&#xFF0C;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x5DF2;&#x7ECF;&#x8BBF;&#x95EE;&#x7684;&#x8DEF;&#x5F84;&#x7ED3;&#x70B9;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x5019;&#x9009;&#x7ED3;&#x70B9;&#xFF0C;&#x4E24;&#x8005;&#x961F;&#x5217;&#x5BB9;&#x91CF;&#x5747;&#x4E3A;K&#x3002;&#x8FED;&#x4EE3;&#x6B65;&#x9AA4;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ol>
+<li>&#x6839;&#x8282;&#x70B9;&#x5165;&#x5019;&#x9009;&#x961F;</li>
+<li>&#x5019;&#x9009;&#x961F;&#x51FA;&#x961F;</li>
+<li>&#x641C;&#x7D22;&#x51FA;&#x961F;&#x7ED3;&#x70B9;&#x76F4;&#x5230;&#x53F6;&#x8282;&#x70B9;&#xFF0C;&#x641C;&#x7D22;&#x8FC7;&#x7A0B;&#x4E2D;&#x5C06;&#x8BBF;&#x95EE;&#x8DEF;&#x5F84;&#x7ED3;&#x70B9;&#x548C;&#x5019;&#x9009;&#x7ED3;&#x70B9;&#xFF08;&#x8BBF;&#x95EE;&#x7ED3;&#x70B9;&#x7684;&#x5144;&#x5F1F;&#x5206;&#x652F;&#xFF09;&#x5206;&#x522B;&#x5165;&#x961F;</li>
+<li>&#x91CD;&#x590D;&#x6B65;&#x9AA4;2&#xFF0C;3&#x76F4;&#x5230;&#x5019;&#x9009;&#x961F;&#x5217;&#x4E3A;&#x7A7A;&#x3002;</li>
+</ol>
+<h2 id="&#x4EE3;&#x7801;&#x5B9E;&#x73B0;"><a href="#&#x4EE3;&#x7801;&#x5B9E;&#x73B0;" class="headerlink" title="&#x4EE3;&#x7801;&#x5B9E;&#x73B0;"></a>&#x4EE3;&#x7801;&#x5B9E;&#x73B0;</h2><p>&#x6570;&#x636E;&#x7ED3;&#x6784;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;<br>&#x6570;&#x636E;&#x70B9;Point<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">template &lt;class T&gt;</div><div class="line">class Point</div><div class="line">{</div><div class="line">public:</div><div class="line">	Point(std::vector&lt;T&gt; <span class="keyword">in</span>) {values = <span class="keyword">in</span>;}</div><div class="line">	T getValue(int dimnesion){ <span class="built_in">return</span> values[dimnesion];}</div><div class="line"></div><div class="line">	int <span class="function"><span class="title">getDimensionAmount</span></span>() {<span class="built_in">return</span> values.size();}</div><div class="line"></div><div class="line">private:</div><div class="line">	std::vector&lt;T&gt; values;</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>KD tree&#x7684;&#x5B9A;&#x4E49;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">template&lt;class T&gt;</div><div class="line">class KDTree</div><div class="line">{</div><div class="line">public: </div><div class="line">	//&#x5F53;&#x524D;&#x503C;</div><div class="line">	Point&lt;T&gt;* root;</div><div class="line">	//&#x7236;&#x8282;&#x70B9;</div><div class="line">	KDTree&lt;T&gt;* parent;</div><div class="line">	//&#x5DE6;&#x5B50;&#x6811;</div><div class="line">	KDTree&lt;T&gt;* leftChild;</div><div class="line">	//&#x53F3;&#x5B50;&#x6811;</div><div class="line">	KDTree&lt;T&gt;* rightChild;</div><div class="line">	//&#x5F53;&#x524D;&#x5212;&#x5206;&#x7EF4;&#x5EA6;</div><div class="line">	int split;</div><div class="line"></div><div class="line">	//&#x9ED8;&#x8BA4;&#x6784;&#x9020;&#x51FD;&#x6570;</div><div class="line">	<span class="function"><span class="title">KDTree</span></span>(){parent = leftChild = rightChild = NULL;}</div><div class="line">	~<span class="function"><span class="title">KDTree</span></span>(){freeMemory();}</div><div class="line"></div><div class="line">	//&#x5224;&#x65AD;kd&#x6811;&#x662F;&#x5426;&#x4E3A;&#x7A7A;</div><div class="line">	bool <span class="function"><span class="title">isEmpty</span></span>(){ <span class="built_in">return</span> root == NULL;}</div><div class="line">	//&#x5224;&#x65AD;kd&#x6811;&#x662F;&#x5426;&#x53EA;&#x662F;&#x4E00;&#x4E2A;&#x53F6;&#x5B50;&#x7ED3;&#x70B9;</div><div class="line">	bool <span class="function"><span class="title">isLeaf</span></span>(){ <span class="built_in">return</span> root != NULL &amp;&amp; rightChild == NULL &amp;&amp; leftChild == NULL;}</div><div class="line">	//&#x5224;&#x65AD;&#x662F;&#x5426;&#x662F;&#x6811;&#x7684;&#x6839;&#x7ED3;&#x70B9;</div><div class="line">	bool <span class="function"><span class="title">isRoot</span></span>(){ <span class="built_in">return</span> (!isEmpty()) &amp;&amp; parent == NULL;}</div><div class="line">	//&#x5224;&#x65AD;&#x8BE5;&#x5B50;kd&#x6811;&#x7684;&#x6839;&#x7ED3;&#x70B9;&#x662F;&#x5426;&#x662F;&#x5176;&#x7236;kd&#x6811;&#x7684;&#x5DE6;&#x7ED3;&#x70B9;</div><div class="line">	bool <span class="function"><span class="title">isLeft</span></span>(){ <span class="keyword">if</span> (parent-&gt;leftChild != NULL) <span class="built_in">return</span> parent-&gt;leftChild-&gt;root == root; <span class="built_in">return</span> <span class="literal">false</span>;}</div><div class="line">	//&#x5224;&#x65AD;&#x8BE5;&#x5B50;kd&#x6811;&#x7684;&#x6839;&#x7ED3;&#x70B9;&#x662F;&#x5426;&#x662F;&#x5176;&#x7236;kd&#x6811;&#x7684;&#x53F3;&#x7ED3;&#x70B9;</div><div class="line">	bool <span class="function"><span class="title">isRight</span></span>() { <span class="keyword">if</span>(parent-rightChild != NULL) <span class="built_in">return</span> parent-&gt;rightChild-&gt;root == root; <span class="built_in">return</span> <span class="literal">false</span>;}</div><div class="line"></div><div class="line">	//&#x4ECE;&#x6B64;&#x5904;&#x521B;&#x5EFA;&#x5B50;&#x6811;&#xFF0C;&#x53EF;&#x4EE5;&#x91CA;&#x653E;&#x5185;&#x5B58;</div><div class="line">	KDTree&lt;T&gt;* <span class="function"><span class="title">generateNewTree</span></span>(){ KDTree&lt;T&gt;* tree = new KDTree&lt;T&gt;(); delList.push_back(tree); <span class="built_in">return</span> tree;}</div><div class="line"></div><div class="line">private:</div><div class="line">	//&#x5220;&#x9664;&#x5217;&#x8868;</div><div class="line">	vector&lt;KDTree&lt;T&gt;*&gt; delList;</div><div class="line"></div><div class="line">	//&#x91CA;&#x653E;&#x5B50;&#x6811;&#x7684;&#x5185;&#x5B58;</div><div class="line">	void <span class="function"><span class="title">freeMemory</span></span>()</div><div class="line">	{</div><div class="line">		<span class="keyword">for</span>(vector&lt;KDTree&lt;T&gt;*&gt;::iterator it = delList.begin(); it != delList.end(); ++it)</div><div class="line">		{</div><div class="line">			<span class="keyword">if</span>( *it != NULL)</div><div class="line">			{</div><div class="line">				delete *it;</div><div class="line">				*it = NULL;</div><div class="line">			}</div><div class="line">		}</div><div class="line">		vector&lt;KDTree&lt;T&gt;*&gt;().swap(delList);</div><div class="line">	}</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>KD tree&#x521B;&#x5EFA;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line">//&#x6784;&#x5EFA;kd&#x6811;</div><div class="line">static void buildKdTree(KDTree&lt;T&gt;* tree, vector&lt;Point&lt;T&gt;*&gt; data, unsigned depth)</div><div class="line">{</div><div class="line">	<span class="keyword">if</span>(tree == NULL)</div><div class="line">	{</div><div class="line">		<span class="built_in">return</span>;</div><div class="line">	}</div><div class="line">	//&#x6837;&#x672C;&#x7684;&#x6570;&#x91CF;</div><div class="line">	unsigned samplesNum = data.size();</div><div class="line">	//&#x7EC8;&#x6B62;&#x6761;&#x4EF6;</div><div class="line">	<span class="keyword">if</span> (samplesNum == 0)</div><div class="line">	{</div><div class="line">		<span class="built_in">return</span>;</div><div class="line">	}</div><div class="line">	//&#x6837;&#x672C;&#x7684;&#x603B;&#x7EF4;&#x5EA6;</div><div class="line">	int k = data[0]-&gt;getDimensionAmount();</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (samplesNum == 1)</div><div class="line">	{</div><div class="line">		tree-&gt;root = data[0];</div><div class="line">		tree-&gt;split = depth % k;</div><div class="line">		<span class="built_in">return</span>;</div><div class="line">	}</div><div class="line"></div><div class="line">	//&#x9009;&#x62E9;&#x5207;&#x5206;&#x7EF4;&#x5EA6;</div><div class="line">	int splitAttribute = depth % k;</div><div class="line">	//&#x6392;&#x5E8F;&#x6C42;&#x4E2D;&#x4F4D;&#x6570;</div><div class="line">	double splitValue = getMidNumOfDim(data, splitAttribute);</div><div class="line"></div><div class="line">	// &#x6839;&#x636E;&#x9009;&#x5B9A;&#x7684;&#x5207;&#x5206;&#x5C5E;&#x6027;&#x548C;&#x5207;&#x5206;&#x503C;&#xFF0C;&#x5C06;&#x6570;&#x636E;&#x96C6;&#x5206;&#x4E3A;&#x4E24;&#x4E2A;&#x5B50;&#x96C6;</div><div class="line">	vector&lt;Point&lt;T&gt;*&gt; subsetLeft;</div><div class="line">	vector&lt;Point&lt;T&gt;*&gt; subsetRight;</div><div class="line"></div><div class="line">	//&#x6BD4;&#x4E2D;&#x4F4D;&#x6570;&#x5C0F;&#x7684;&#x653E;&#x5728;&#x5DE6;&#x96C6;&#x5408;&#xFF0C;&#x5927;&#x7684;&#x653E;&#x5728;&#x53F3;&#x96C6;&#x5408;</div><div class="line">	<span class="keyword">for</span>(vector&lt;Point&lt;T&gt;*&gt;::iterator it = data.begin(); it != data.end(); ++it)</div><div class="line">	{</div><div class="line">		Point&lt;T&gt;* p = *it;</div><div class="line">		<span class="keyword">if</span>(p-&gt;getValue(splitAttribute) == splitValue </div><div class="line">			&amp;&amp; tree-&gt;isEmpty())</div><div class="line">		{</div><div class="line">			tree-&gt;root = p;</div><div class="line">			tree-&gt;split = splitAttribute;</div><div class="line">		}</div><div class="line">		<span class="keyword">else</span></div><div class="line">		{</div><div class="line">			(p-&gt;getValue(splitAttribute) &lt; splitValue) ? subsetLeft.push_back(p) : subsetRight.push_back(p);</div><div class="line">		}</div><div class="line">	}</div><div class="line"></div><div class="line">	//&#x5B50;&#x96C6;&#x9012;&#x5F52;&#x8C03;&#x7528;buildKdTree&#x51FD;&#x6570;</div><div class="line">	<span class="keyword">if</span>(subsetLeft.size() &gt; 0)</div><div class="line">	{</div><div class="line">		tree-&gt;leftChild = tree-&gt;generateNewTree();</div><div class="line">		tree-&gt;leftChild-&gt;parent = tree;</div><div class="line">		buildKdTree(tree-&gt;leftChild, subsetLeft, depth + 1);</div><div class="line">	}</div><div class="line"></div><div class="line">	<span class="keyword">if</span>(subsetRight.size() &gt; 0)</div><div class="line">	{</div><div class="line">		tree-&gt;rightChild = tree-&gt;generateNewTree();</div><div class="line">		tree-&gt;rightChild-&gt;parent = tree;</div><div class="line">		buildKdTree(tree-&gt;rightChild, subsetRight, depth + 1);</div><div class="line">	}</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>knn&#x7B97;&#x6CD5;&#x5B9E;&#x73B0;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">//k&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#xFF08;&#x8FD1;&#x4F3C;&#xFF09;&#xFF0C;&#x5229;&#x7528;&#x4E24;&#x4E2A;&#x5806;&#xFF0C;&#x4E00;&#x4E2A;&#x8BBF;&#x95EE;&#x7ED3;&#x70B9;&#x5806;&#xFF0C;&#x4E00;&#x4E2A;&#x5019;&#x9009;&#x8DEF;&#x5F84;&#x5806;</div><div class="line">static vector&lt;Point&lt;T&gt;*&gt; knn(Point&lt;T&gt;* goal, KDTree&lt;T&gt;* tree, unsigned int k, int maxCount)</div><div class="line">{</div><div class="line">	CompareRoutePoint routerComp (goal);</div><div class="line">	CompareCandicatePoint candiComp (goal);</div><div class="line"></div><div class="line">	ATPriorityQueue&lt;Point&lt;T&gt;*&gt; routerQueue (routerComp, k);</div><div class="line">	ATPriorityQueue&lt;KDTree&lt;T&gt;*&gt; candicateQueue (candiComp, k);</div><div class="line"></div><div class="line">	<span class="keyword">if</span>(goal == NULL || tree == NULL || k &lt; 0)</div><div class="line">	{</div><div class="line">		<span class="built_in">return</span> routerQueue.allData();</div><div class="line">	}</div><div class="line"></div><div class="line">	candicateQueue.add(tree);</div><div class="line">	int cycleCount = 0;</div><div class="line"></div><div class="line">	<span class="keyword">while</span>(candicateQueue.size() &gt; 0 &amp;&amp; cycleCount &lt; maxCount)</div><div class="line">	{</div><div class="line">		KDTree&lt;T&gt;* out = candicateQueue.poll();</div><div class="line"></div><div class="line">		searchLeafWithHeap(goal, out, k, routerQueue, candicateQueue);</div><div class="line">	}</div><div class="line"></div><div class="line">	vector&lt;Point&lt;T&gt;*&gt; result = routerQueue.allData();</div><div class="line"></div><div class="line">	ATSort&lt;Point&lt;T&gt;*&gt;::sort(result, routerComp);</div><div class="line">	<span class="built_in">return</span> result;</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>knn&#x67E5;&#x627E;&#x5230;&#x53F6;&#x5B50;&#x7684;&#x9012;&#x5F52;&#x5B50;&#x65B9;&#x6CD5;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line">//&#x4ECE;&#x5DF2;&#x77E5;&#x4F4D;&#x7F6E;&#x641C;&#x7D22;&#x5230;&#x53F6;&#x5B50;&#x7ED3;&#x70B9;</div><div class="line">static KDTree&lt;T&gt;* searchLeafWithHeap(Point&lt;T&gt;* goal, KDTree&lt;T&gt; *tree, int k, ATPriorityQueue&lt;Point&lt;T&gt;*&gt;&amp; router, ATPriorityQueue&lt;KDTree&lt;T&gt;*&gt;&amp; candicater)</div><div class="line">{</div><div class="line">	KDTree&lt;T&gt;* currentTree = tree;</div><div class="line">	router.add(currentTree-&gt;root); //&#x8DEF;&#x5F84;&#x5165;&#x5806;</div><div class="line"></div><div class="line">	int tempDim (-1);</div><div class="line">	<span class="keyword">while</span>(currentTree != NULL &amp;&amp; !currentTree-&gt;isLeaf())</div><div class="line">	{</div><div class="line">		tempDim = currentTree-&gt;split;</div><div class="line">		<span class="keyword">if</span> (goal-&gt;getValue(tempDim) &lt; currentTree-&gt;root-&gt;getValue(tempDim))</div><div class="line">		{</div><div class="line">			<span class="keyword">if</span>(currentTree-&gt;leftChild != NULL)</div><div class="line">			{</div><div class="line">				<span class="keyword">if</span>(currentTree-&gt;rightChild != NULL)</div><div class="line">				{</div><div class="line">					candicater.add(currentTree-&gt;rightChild);//&#x53E6;&#x4E00;&#x5206;&#x652F;&#x4F5C;&#x4E3A;&#x5019;&#x9009;&#x70B9;&#x5165;&#x5806;</div><div class="line">				}</div><div class="line"></div><div class="line">				currentTree = currentTree-&gt;leftChild;</div><div class="line">				router.add(currentTree-&gt;root); //&#x8DEF;&#x5F84;&#x5165;&#x5806;</div><div class="line">			}</div><div class="line">			<span class="keyword">else</span></div><div class="line">			{</div><div class="line">				<span class="keyword">if</span>(currentTree-&gt;isLeaf())</div><div class="line">				{</div><div class="line">					<span class="built_in">break</span>;</div><div class="line">				}</div><div class="line">				<span class="keyword">else</span></div><div class="line">				{</div><div class="line">					currentTree = currentTree-&gt;rightChild;</div><div class="line">					router.add(currentTree-&gt;root); //&#x8DEF;&#x5F84;&#x5165;&#x5806;</div><div class="line">				}</div><div class="line">			}</div><div class="line">		}</div><div class="line">		<span class="keyword">else</span></div><div class="line">		{</div><div class="line">			<span class="keyword">if</span>(currentTree-&gt;rightChild != NULL)</div><div class="line">			{</div><div class="line">				<span class="keyword">if</span>(currentTree-&gt;leftChild != NULL)</div><div class="line">				{</div><div class="line">					candicater.add(currentTree-&gt;leftChild); //&#x53E6;&#x4E00;&#x5206;&#x652F;&#x4F5C;&#x4E3A;&#x5019;&#x9009;&#x70B9;&#x5165;&#x5806;</div><div class="line">				}</div><div class="line"></div><div class="line">				currentTree = currentTree-&gt;rightChild;</div><div class="line">				router.add(currentTree-&gt;root);//&#x8DEF;&#x5F84;&#x5165;&#x5806;</div><div class="line">			}</div><div class="line">			<span class="keyword">else</span></div><div class="line">			{</div><div class="line">				<span class="keyword">if</span>(currentTree-&gt;isLeaf())</div><div class="line">				{</div><div class="line">					<span class="built_in">break</span>;</div><div class="line">				}</div><div class="line">				<span class="keyword">else</span></div><div class="line">				{</div><div class="line">					currentTree = currentTree-&gt;leftChild;</div><div class="line">					router.add(currentTree-&gt;root);//&#x8DEF;&#x5F84;&#x5165;&#x5806;</div><div class="line">				}</div><div class="line">			}</div><div class="line">			</div><div class="line">		}</div><div class="line">	}</div><div class="line"></div><div class="line">	<span class="built_in">return</span> currentTree;</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x6700;&#x8FD1;&#x90BB;&#x7B97;&#x6CD5;&#x6709;&#x4E24;&#x79CD;&#x65B9;&#x6848;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;K&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#x4E2D;K&#x53D6;1&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x539F;&#x59CB;&#x5B9E;&#x73B0;&#x3002;<br>K&#x53D6;1<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line">//&#x539F;&#x59CB;&#x7684;&#x6700;&#x8FD1;&#x90BB;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#xFF0C;&#x975E;BBF</div><div class="line">//static Point&lt;T&gt;* nearestNeighborImpl(Point&lt;T&gt;* goal, KDTree&lt;T&gt; *tree, <span class="built_in">set</span>&lt;Point&lt;T&gt;*&gt;&amp; visitedSets)</div><div class="line">//{</div><div class="line">//	Point&lt;T&gt;* currentNearest = tree-&gt;root;</div><div class="line">//	KDTree&lt;T&gt;* currentTree = searchLeaf(goal, tree);</div><div class="line">//	currentNearest = currentTree-&gt;root;</div><div class="line"></div><div class="line"></div><div class="line">//	//&#x5982;&#x679C;&#x641C;&#x7D22;&#x533A;&#x57DF;&#x5BF9;&#x5E94;&#x7684;&#x5B50;kd&#x6811;&#x7684;&#x6839;&#x7ED3;&#x70B9;&#x4E0D;&#x662F;&#x6574;&#x4E2A;kd&#x6811;&#x7684;&#x6839;&#x7ED3;&#x70B9;&#xFF0C;&#x7EE7;&#x7EED;&#x56DE;&#x9000;&#x641C;&#x7D22;</div><div class="line">//	<span class="keyword">while</span> (currentTree-&gt;parent != NULL)</div><div class="line">//	{</div><div class="line">//		//&#x5DE6;&#x5B50;&#x6811;&#x5B58;&#x5728;&#xFF0C;&#x4E14;&#x672A;&#x8BBF;&#x95EE;&#x8FC7;&#x5219;&#x4E00;&#x76F4;&#x5411;&#x5DE6;&#x79FB;&#x52A8;</div><div class="line">//		<span class="keyword">if</span>(currentTree-&gt;leftChild != NULL </div><div class="line">//			&amp;&amp; !isVisited(visitedSets, currentTree-&gt;leftChild-&gt;root))</div><div class="line">//		{</div><div class="line">//			currentTree = currentTree-&gt;leftChild;</div><div class="line">//			<span class="built_in">continue</span>;</div><div class="line">//		}</div><div class="line">//		<span class="keyword">else</span></div><div class="line">//		{</div><div class="line"></div><div class="line">//			//&#x82E5;&#x66F4;&#x5C0F;&#xFF0C;&#x5219;&#x66F4;&#x65B0;&#x6700;&#x8FD1;&#x70B9;</div><div class="line">//			<span class="keyword">if</span>(measureDistance(*goal, *currentTree-&gt;root) &lt; measureDistance(*goal, *currentNearest))</div><div class="line">//			{</div><div class="line">//				currentNearest = currentTree-&gt;root;</div><div class="line">//			}</div><div class="line">//			<span class="built_in">set</span>Visited(visitedSets, currentTree-&gt;root); //&#x5DF2;&#x7ECF;&#x8BBF;&#x95EE;</div><div class="line"></div><div class="line">//			//&#x641C;&#x7D22;&#x533A;&#x57DF;&#x7684;&#x7EF4;&#x5EA6;&#x53CA;&#x8BE5;&#x7EF4;&#x5EA6;&#x4E0B;&#x8D85;&#x5E73;&#x9762;&#x7684;&#x503C;</div><div class="line">//			int searchDim = currentTree-&gt;parent-&gt;split;</div><div class="line">//			double superPlaneValue = currentTree-&gt;parent-&gt;root-&gt;getValue(searchDim);</div><div class="line">//			//&#x76EE;&#x6807;&#x70B9;&#x5230;&#x8D85;&#x5E73;&#x9762;&#x7684;&#x8DDD;&#x79BB;</div><div class="line">//			double districtDistance = abs(goal-&gt;getValue(searchDim) - superPlaneValue);</div><div class="line"></div><div class="line"></div><div class="line">//			KDTree&lt;T&gt;* anotherTree;</div><div class="line">//			//&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x5207;&#x6362;</div><div class="line">//			currentTree-&gt;isLeft() ? anotherTree = currentTree-&gt;parent-&gt;rightChild : anotherTree = currentTree-&gt;parent-&gt;leftChild;</div><div class="line">//			//&#x5982;&#x679C;&#x201C;&#x76EE;&#x6807;&#x70B9;&#x5230;&#x8D85;&#x5E73;&#x9762;&#x7684;&#x8DDD;&#x79BB;&#x201D;&#x6BD4;&#x201C;&#x76EE;&#x6807;&#x70B9;&#x5230;&#x5F53;&#x524D;&#x6700;&#x8FD1;&#x70B9;&#x8DDD;&#x79BB;&#x201D;&#x77ED;&#xFF0C;&#x8868;&#x660E;&#x7236;&#x8282;&#x70B9;&#x6216;</div><div class="line">//			//&#x53E6;&#x4E00;&#x5B50;&#x6811;&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x8DDD;&#x79BB;&#x76EE;&#x6807;&#x70B9;&#x66F4;&#x8FD1;&#x7684;&#x70B9;</div><div class="line">//			<span class="keyword">if</span>(districtDistance &lt; measureDistance(*goal, *currentNearest))</div><div class="line">//			{</div><div class="line">//				<span class="keyword">if</span>(anotherTree != NULL &amp;&amp; !isVisited(visitedSets, anotherTree-&gt;root))</div><div class="line">//				{</div><div class="line">//					//&#x82E5;&#x5B58;&#x5728;&#x6216;&#x672A;&#x8BBF;&#x95EE;&#x5219;&#x5C06;&#x5F53;&#x524D;&#x6811;&#x5207;&#x6362;&#x8FC7;&#x53BB;</div><div class="line">//					currentTree = anotherTree;</div><div class="line">//					<span class="built_in">continue</span>;</div><div class="line">//				}</div><div class="line">//				<span class="keyword">else</span></div><div class="line">//				{</div><div class="line">//					currentTree = currentTree-&gt;parent;</div><div class="line">//				}</div><div class="line">//			}</div><div class="line">//			<span class="keyword">else</span></div><div class="line">//			{</div><div class="line">//				<span class="keyword">if</span>(anotherTree != NULL)</div><div class="line">//				{</div><div class="line">//					//&#x53E6;&#x4E00;&#x8FB9;&#x5B50;&#x6811;&#x660E;&#x663E;&#x66F4;&#x5927;&#xFF0C;&#x8BBE;&#x7F6E;&#x4E3A;&#x5DF2;&#x8BBF;&#x95EE;&#xFF08;&#x9632;&#x6B62;&#x518D;&#x6B21;&#x8FED;&#x4EE3;&#xFF09;</div><div class="line">//					<span class="built_in">set</span>Visited(visitedSets, anotherTree-&gt;root); //&#x5DF2;&#x7ECF;&#x8BBF;&#x95EE;</div><div class="line">//				}</div><div class="line">//				currentTree = currentTree-&gt;parent;</div><div class="line">//			}</div><div class="line">//		}</div><div class="line">//	}</div><div class="line">//	<span class="built_in">return</span> currentNearest;</div><div class="line">//}</div></pre></td></tr></table></figure></p>
+<p>K&#x53D6;1&#x65B9;&#x6CD5;&#xFF0C;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#xFF0C;&#x5957;&#x4E00;&#x4E2A;&#x58F3;&#x5373;&#x53EF;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">//&#x5728;kd&#x6811;tree&#x4E2D;&#x641C;&#x7D22;&#x76EE;&#x6807;&#x70B9;goal&#x7684;&#x6700;&#x8FD1;&#x90BB;</div><div class="line">//&#x8F93;&#x5165;&#xFF1A;&#x76EE;&#x6807;&#x70B9;&#xFF1B;&#x5DF2;&#x6784;&#x9020;&#x7684;kd&#x6811;</div><div class="line">//&#x8F93;&#x51FA;&#xFF1A;&#x76EE;&#x6807;&#x70B9;&#x7684;&#x6700;&#x8FD1;&#x90BB;</div><div class="line">static Point&lt;T&gt;* searchNearestNeighbor(Point&lt;T&gt;* goal, KDTree&lt;T&gt;* tree)</div><div class="line">{</div><div class="line">	vector&lt;Point&lt;T&gt;*&gt; out = knn(goal, tree, 1, 200);</div><div class="line">	<span class="keyword">if</span>(out.size() &gt; 0)</div><div class="line">	{</div><div class="line">		<span class="built_in">return</span> out[0];</div><div class="line">	}</div><div class="line">	<span class="keyword">else</span></div><div class="line">	{</div><div class="line">		<span class="built_in">return</span> NULL;</div><div class="line">	}</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x503C;&#x5F97;&#x6CE8;&#x610F;&#x7684;&#x662F;KD tree&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x67E5;&#x627E;&#x67D0;&#x4E00;&#x7EF4;&#x5EA6;&#x4E2D;&#x4F4D;&#x6570;&#x7684;&#x4E0D;&#x5FC5;&#x8981;&#x5BF9;&#x6240;&#x6709;&#x5143;&#x7D20;&#x8FDB;&#x884C;&#x5168;&#x90E8;&#x6392;&#x5E8F;&#xFF0C;&#x672C;&#x6587;&#x91C7;&#x7528;&#x5806;&#x6392;&#x5E8F;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x6392;&#x5E8F;&#x4E00;&#x534A;&#x5373;&#x53EF;&#x5B9E;&#x73B0;&#x3002;&#x4E0B;&#x9762;&#x662F;&#x5BF9;K&#x4E2A;&#x5143;&#x7D20;&#x6392;&#x5E8F;&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x6392;&#x5E8F;&#x540E;K&#x4E2A;&#x5143;&#x7D20;&#x4ECE;&#x5C0F;&#x5230;&#x5927;&#x4F4D;&#x4E8E;&#x6570;&#x636E;&#x7684;&#x6700;&#x540E;K&#x9879;&#x3002;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**&#x90E8;&#x5206;&#x5806;&#x6392;&#x5E8F;**/</div><div class="line">static void HeapPartlySort(vector&lt;T&gt;&amp; raw, int k, ATICompare&lt;T&gt;&amp; compare)</div><div class="line">{</div><div class="line">	int n = raw.size();</div><div class="line">	//&#x5148;&#x5EFA;&#x7ACB;&#x5927;&#x9876;&#x5806;</div><div class="line">	<span class="keyword">for</span>(int i = n/2 - 1; i &gt;= 0; --i)</div><div class="line">	{</div><div class="line">		ATHeap&lt;T&gt;::heapAdjust(raw, i, n - 1, compare);</div><div class="line">	}</div><div class="line"></div><div class="line">	//&#x8FDB;&#x884C;&#x6392;&#x5E8F;</div><div class="line">	int <span class="built_in">limit</span> = (n - k - 1 &lt; 0) ? 0 : n - k - 1;</div><div class="line">	<span class="keyword">for</span>(int i = n - 1; i &gt; <span class="built_in">limit</span>; --i)</div><div class="line">	{</div><div class="line">		//&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x548C;&#x7B2C;&#x4E00;&#x5143;&#x7D20;&#x8FDB;&#x884C;&#x4EA4;&#x6362;</div><div class="line">		T temp = raw[i];</div><div class="line">		raw[i] = raw[0];</div><div class="line">		raw[0] = temp;</div><div class="line"></div><div class="line">		//&#x7136;&#x540E;&#x5C06;&#x5269;&#x4E0B;&#x7684;&#x65E0;&#x5E8F;&#x5143;&#x7D20;&#x7EE7;&#x7EED;&#x8C03;&#x6574;&#x4E3A;&#x5927;&#x9876;&#x5806;</div><div class="line">		ATHeap&lt;T&gt;::heapAdjust(raw, 0, i - 1, compare);</div><div class="line">	}</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x60F3;&#x83B7;&#x53D6;&#x4EE3;&#x7801;&#xFF0C;&#x8BF7;&#x6233;<a href="https://github.com/AnluTong/Algrithm/tree/master/KDTree" target="_blank" rel="external">&#x8FD9;&#x91CC;</a></p>
+<h2 id="&#x53C2;&#x8003;"><a href="#&#x53C2;&#x8003;" class="headerlink" title="&#x53C2;&#x8003;"></a>&#x53C2;&#x8003;</h2><ul>
+<li><a href="http://www.cnblogs.com/eyeszjwang/articles/2429382.html" target="_blank" rel="external">k-d tree&#x7B97;&#x6CD5;</a></li>
+<li><a href="https://my.oschina.net/keyven/blog/221792" target="_blank" rel="external">Kd Tree&#x7B97;&#x6CD5;&#x539F;&#x7406;&#x548C;&#x5F00;&#x6E90;&#x5B9E;&#x73B0;&#x4EE3;&#x7801;</a></li>
+<li><a href="http://www.cnblogs.com/v-July-v/archive/2012/11/20/3125419.html" target="_blank" rel="external">&#x4ECE;K&#x8FD1;&#x90BB;&#x7B97;&#x6CD5;&#x3001;&#x8DDD;&#x79BB;&#x5EA6;&#x91CF;&#x8C08;&#x5230;KD&#x6811;&#x3001;SIFT+BBF&#x7B97;&#x6CD5;</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构/" rel="tag">#数据结构</a>
+          
+            <a href="/tags/算法/" rel="tag">#算法</a>
+          
+            <a href="/tags/二叉树/" rel="tag">#二叉树</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/11/kmean/" rel="next" title="K-Mean 聚类分析">
+                <i class="fa fa-chevron-left"></i> K-Mean 聚类分析
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Andrew" />
+          <p class="site-author-name" itemprop="name">Andrew</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#描述"><span class="nav-number">2.</span> <span class="nav-text">描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#KD-tree构建"><span class="nav-number">2.1.</span> <span class="nav-text">KD tree构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-近邻搜索"><span class="nav-number">2.2.</span> <span class="nav-text">K 近邻搜索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-number">3.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <!--<i class="fa fa-heart"></i>-->
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andrew</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
